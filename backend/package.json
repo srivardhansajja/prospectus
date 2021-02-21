@@ -1,0 +1,26 @@
+{
+  "name": "prospectus-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=dev nodemon index.js",
+    "start-prod": "NODE_ENV=prod node index.js",
+    "test": "mocha --exit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "chai": "^4.3.0",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "mocha": "^8.3.0",
+    "nodemon": "^2.0.7"
+  }
+}
