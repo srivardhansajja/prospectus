@@ -6,7 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const connection = require('./db');
 
-const queries = require('./queries.js');
+const queries = require('./queries');
 
 const app = express();
 const port = 3001;
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 // route for returning search results
 app.get('/search', (req, res) => {
   const sql = queries.Search;
-  const { dept, keywords, userid } = req.query.dept;
+  const { dept, keywords, userid } = req.query;
 
   connection.query(
     sql,
@@ -43,7 +43,7 @@ app.get('/search', (req, res) => {
 // route for querying all courses in a user's wishlist
 app.get('/user/wishlist', (req, res) => {
   const sql = queries.wishlistQuery;
-  const { userid, keywords } = req.query.userid;
+  const { userid, keywords } = req.query;
 
   connection.query(sql, [userid, keywords], (err, data) => {
     if (err) throw err;
@@ -56,10 +56,10 @@ app.get('/user/wishlist', (req, res) => {
   });
 });
 
-// route for adding entry from wishlist
+// route for adding entry to a user's wishlist
 app.post('/user/wishlist', (req, res) => {
   const sql = queries.wishlistInsert;
-  const { userid, courseid } = req.body.userid;
+  const { userid, courseid } = req.body;
 
   connection.query(sql, [userid, courseid, courseid], (err, data) => {
     if (err) {
@@ -78,10 +78,10 @@ app.post('/user/wishlist', (req, res) => {
   });
 });
 
-// route for updating entry in wishlist
+// route for updating entry in a user's wishlist
 app.post('/user/wishlist/update', (req, res) => {
   const sql = queries.wishlistUpdate;
-  const { userid, courseid, desc } = req.body.userid;
+  const { userid, courseid, desc } = req.body;
 
   console.log(req.body);
   connection.query(sql, [desc, courseid, userid], (err, data) => {
@@ -95,10 +95,10 @@ app.post('/user/wishlist/update', (req, res) => {
   });
 });
 
-// route for deleting entry from wishlist
+// route for deleting entry from a user's wishlist
 app.delete('/user/wishlist', (req, res) => {
   const sql = queries.wishlistDelete;
-  const { userid, courseid } = req.query.userid;
+  const { userid, courseid } = req.query;
 
   connection.query(sql, [userid, courseid], (err, data) => {
     if (err) throw err;
@@ -114,7 +114,7 @@ app.delete('/user/wishlist', (req, res) => {
 // route for querying all courses that a user has taken
 app.get('/user/coursesTaken', (req, res) => {
   const sql = queries.coursesTakenQuery;
-  const { userid } = req.query.userid;
+  const { userid } = req.query;
 
   connection.query(sql, [userid], (err, data) => {
     if (err) throw err;

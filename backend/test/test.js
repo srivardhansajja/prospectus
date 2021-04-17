@@ -2,7 +2,7 @@
 process.env.NODE_ENV = 'test';
 const { expect } = require('chai');
 const fetch = require('node-fetch');
-require('../index');
+require('../src/index');
 
 describe('Test', () => {
   it('Hello world', async () => {
