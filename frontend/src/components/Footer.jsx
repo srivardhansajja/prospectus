@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
 // reactstrap components
-import { Row, Col, Nav, NavItem, NavLink } from "reactstrap";
+import { Row, Col, Nav, NavItem, NavLink } from 'reactstrap';
 
 const Footer = () => {
   return (
@@ -10,8 +10,9 @@ const Footer = () => {
         <div>
           <a
             className="font-weight-bold ml-1"
-            href="https://www.creative-tim.com?ref=adr-admin-footer"
+            href="https://wiki.illinois.edu/wiki/display/CS411AASP21/Project+Track+1"
             target="_blank"
+            rel="noreferrer"
           >
             Project Track 1, CS 411 Spring 2021, University of Illinois
             Urbana-Champaign
@@ -23,8 +24,9 @@ const Footer = () => {
         <Nav className="nav-footer justify-content-center justify-content-xl-end">
           <NavItem>
             <NavLink
-              href="https://www.creative-tim.com?ref=adr-admin-footer"
+              href="https://wiki.illinois.edu/wiki/display/CS411AASP21/Project+YesSQL"
               target="_blank"
+              rel="noreferrer"
             >
               Team 14: YesSQL
             </NavLink>

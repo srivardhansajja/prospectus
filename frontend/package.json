@@ -4,7 +4,7 @@
   "description": "Prospectus Course Planner",
   "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3006 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -25,6 +25,7 @@
   ],
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.15.2",
+    "axios": "^0.21.1",
     "bootstrap": "4.6.0",
     "chart.js": "2.9.4",
     "classnames": "2.2.6",
@@ -39,6 +40,7 @@
     "react-dom": "17.0.1",
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.1",
+    "reactjs-popup": "^2.0.4",
     "reactstrap": "8.9.0"
   },
   "devDependencies": {

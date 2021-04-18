@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-// reactstrap components
+import React, { useState } from 'react';
+
 import {
   DropdownMenu,
   DropdownItem,
@@ -13,7 +12,7 @@ import {
   NavLink,
   NavItem,
   Nav,
-} from "reactstrap";
+} from 'reactstrap';
 
 const ProspectusNavbar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,10 +25,10 @@ const ProspectusNavbar = (props) => {
         <NavbarBrand
           className="text-white"
           style={{
-            fontWeight: "bold",
-            fontSize: "20pt",
-            backgroundColor: "black",
-            borderRadius: "10px",
+            fontWeight: 'bold',
+            fontSize: '20pt',
+            backgroundColor: 'black',
+            borderRadius: '10px',
           }}
           href="/"
         >
@@ -41,7 +40,7 @@ const ProspectusNavbar = (props) => {
             <NavItem>
               <NavLink
                 className="text-white"
-                style={{ fontWeight: "bold", fontSize: "15pt" }}
+                style={{ fontWeight: 'bold', fontSize: '15pt' }}
                 href="/prospectus/dashboard"
               >
                 <i className="ni ni-app" />
@@ -51,7 +50,7 @@ const ProspectusNavbar = (props) => {
             <NavItem>
               <NavLink
                 className="text-white"
-                style={{ fontWeight: "bold", fontSize: "15pt" }}
+                style={{ fontWeight: 'bold', fontSize: '15pt' }}
                 href="/prospectus/explore"
               >
                 <i className="ni ni-planet" />
@@ -66,7 +65,7 @@ const ProspectusNavbar = (props) => {
               <span className="avatar avatar-sm rounded-circle">
                 <img
                   alt="..."
-                  src={require("../assets/img/profile.jpg").default}
+                  src={require('../assets/img/profile.jpg').default}
                 />
               </span>
             </DropdownToggle>

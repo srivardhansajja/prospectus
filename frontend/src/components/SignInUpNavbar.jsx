@@ -15,8 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 // reactstrap components
 import {
   UncontrolledCollapse,
@@ -28,7 +28,7 @@ import {
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
 
 const SignInUpNavbar = () => {
   return (
@@ -38,10 +38,10 @@ const SignInUpNavbar = () => {
           <NavbarBrand
             className="text-white"
             style={{
-              fontWeight: "bold",
-              fontSize: "20pt",
-              backgroundColor: "black",
-              borderRadius: "10px",
+              fontWeight: 'bold',
+              fontSize: '20pt',
+              backgroundColor: 'black',
+              borderRadius: '10px',
             }}
             href="/"
           >
@@ -57,10 +57,10 @@ const SignInUpNavbar = () => {
                   <NavbarBrand
                     className="text-white"
                     style={{
-                      fontWeight: "bold",
-                      fontSize: "20pt",
-                      backgroundColor: "black",
-                      borderRadius: "10px",
+                      fontWeight: 'bold',
+                      fontSize: '20pt',
+                      backgroundColor: 'black',
+                      borderRadius: '10px',
                     }}
                     href="/"
                   >

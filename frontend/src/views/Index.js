@@ -15,16 +15,13 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from "react";
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
+import React, { useState } from 'react';
 // javascipt plugin for creating charts
-import Chart from "chart.js";
+import Chart from 'chart.js';
 // react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
@@ -33,7 +30,7 @@ import {
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
 
 // core components
 import {
@@ -41,13 +38,13 @@ import {
   parseOptions,
   chartExample1,
   chartExample2,
-} from "variables/charts.js";
+} from 'variables/charts.js';
 
 // import Header from "components/Headers/Header.js";
 
 const Dashboard = (props) => {
   const [activeNav, setActiveNav] = useState(1);
-  const [chartExample1Data, setChartExample1Data] = useState("data1");
+  const [chartExample1Data, setChartExample1Data] = useState('data1');
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
@@ -56,7 +53,7 @@ const Dashboard = (props) => {
   const toggleNavs = (e, index) => {
     e.preventDefault();
     setActiveNav(index);
-    setChartExample1Data("data" + index);
+    setChartExample1Data('data' + index);
   };
   return (
     <>

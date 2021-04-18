@@ -15,17 +15,12 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import Axios from 'axios';
 
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
+import departments from '../variables/depts.json';
 
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
@@ -35,55 +30,124 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
 
 // core components
 
-import {
-  chartOptions,
-  parseOptions,
-  chartExample1,
-  chartExample2,
-} from "variables/charts.js";
+import SearchResult from 'components/SearchResult.jsx';
+import Wishlist from 'components/Wishlist';
+import RelevantCourses from 'components/RelevantCourses.jsx';
 
 const Explore = () => {
-  const [activeNav, setActiveNav] = useState(1);
-  const [chartExample1Data, setChartExample1Data] = useState("data1");
+  const username = 'ajackson1';
+  var keywords = '';
+  var dept = '';
+  var listsElements;
 
-  if (window.Chart) {
-    parseOptions(Chart, chartOptions());
+  const [resultsList, setResultsList] = useState([]);
+  const [searchString, setSearchString] = useState([]);
+
+  function generateAPIQuery(queryString) {
+    setSearchString(queryString);
+    const words = queryString.split(' ');
+    for (var i = 0; i < words.length; i++) {
+      if (departments.depts.includes(words[i])) {
+        dept = words[i] + '%';
+        delete words[i];
+        break;
+      }
+    }
+    keywords = words.join('%');
+    console.log(keywords);
+    console.log(dept);
   }
 
-  const toggleNavs = (e, index) => {
-    e.preventDefault();
-    setActiveNav(index);
-    setChartExample1Data("data" + index);
+  const getSearchResults = (queryString) => {
+    generateAPIQuery(queryString.toLowerCase());
+
+    Axios.get('http://localhost:3001/search', {
+      params: { userid: username, keywords: keywords, dept: dept },
+    }).then(
+      (response) => {
+        console.log('lipliplip');
+        console.log(response.data.data);
+        var results = response.data.data.map(function (item) {
+          return [
+            item['CourseID'],
+            item['UniversityID_c'],
+            item['Description'],
+            item['CreditHours'],
+            item['AverageGPA'],
+            item['CourseDepartment'],
+            item['CourseName'],
+            item['num_students'],
+          ];
+        });
+        setResultsList(results);
+
+        console.log(results);
+
+        // console.log;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
+
+  var wishlist = <Wishlist />;
+
+  if (searchString.length > 0) {
+    listsElements = resultsList.map((course) => (
+      <SearchResult
+        key={course[0]}
+        courseid={course[0]}
+        coursename={course[6]}
+        description={course[2]}
+      />
+    ));
+  } else {
+    listsElements = (
+      <div
+        style={{
+          borderWidth: 2,
+          borderStyle: 'solid',
+          borderColor: 'white',
+          borderRadius: 20,
+          textAlign: 'center',
+          color: 'white',
+          padding: 10,
+          marginTop: 15,
+          marginLeft: 30,
+          marginRight: 30,
+        }}
+      >
+        Search for courses based on name, department, description, subtopics or
+        general education category
+      </div>
+    );
+  }
+
   return (
     <>
       <Container className="mt--7" fluid>
         <Row>
           <Col
-            style={{ minHeight: "100px", height: "100px" }}
+            style={{ minHeight: '100px', height: '100px' }}
             className="mb-5 mb-xl-0"
             xl="3"
           >
             <Card
-              style={{ height: "900px" }}
+              style={{ height: '875px' }}
               className="bg-gradient-default shadow"
             >
               <CardHeader className="bg-transparent">
                 <Row className="align-items-center">
                   <div className="col">
-                    <Form className="navbar-search navbar-search-dark ml--5 mr-1 ml-lg-auto">
+                    <Form className="navbar-search navbar-search-dark ml-lg-auto">
                       <FormGroup className="mb-0">
                         <InputGroup className="input-group-alternative">
                           <InputGroupAddon addonType="prepend">
@@ -91,283 +155,66 @@ const Explore = () => {
                               <i className="fas fa-search" />
                             </InputGroupText>
                           </InputGroupAddon>
-                          <Input placeholder="Search" type="text" />
+                          <Input
+                            placeholder="Search"
+                            onChange={(e) => getSearchResults(e.target.value)}
+                            type="text"
+                          />
                         </InputGroup>
                       </FormGroup>
                     </Form>
                   </div>
                 </Row>
               </CardHeader>
+              <CardBody
+                style={{
+                  padding: 0,
+                  overflowY: 'auto',
+                }}
+              >
+                {listsElements}
+              </CardBody>
             </Card>
           </Col>
 
           <Col>
-            <Row>
+            <Row style={{ padding: -10, marginBottom: -20 }}>
               <Col className="mb-5 mb-xl-0" xl="8">
-                <Card className="bg-gradient-default shadow">
+                <Card
+                  className="bg-gradient-default shadow"
+                  style={{ height: '100%' }}
+                >
                   <CardHeader className="bg-transparent">
                     <Row className="align-items-center">
                       <div className="col">
-                        {/* <h6 className="text-uppercase text-light ls-1 mb-1">
-                          Overview
-                        </h6> */}
                         <h2 className="text-white mb-0">Course Dependencies</h2>
                       </div>
-                      <div className="col">
-                        <Nav className="justify-content-end" pills>
-                          <NavItem>
-                            <NavLink
-                              className={classnames("py-2 px-3", {
-                                active: activeNav === 1,
-                              })}
-                              href="#pablo"
-                              onClick={(e) => toggleNavs(e, 1)}
-                            >
-                              <span className="d-none d-md-block">Month</span>
-                              <span className="d-md-none">M</span>
-                            </NavLink>
-                          </NavItem>
-                          <NavItem>
-                            <NavLink
-                              className={classnames("py-2 px-3", {
-                                active: activeNav === 2,
-                              })}
-                              data-toggle="tab"
-                              href="#pablo"
-                              onClick={(e) => toggleNavs(e, 2)}
-                            >
-                              <span className="d-none d-md-block">Week</span>
-                              <span className="d-md-none">W</span>
-                            </NavLink>
-                          </NavItem>
-                        </Nav>
-                      </div>
                     </Row>
                   </CardHeader>
-                  <CardBody>
-                    {/* Chart */}
-                    <div className="chart">
-                      <Line
-                        data={chartExample1[chartExample1Data]}
-                        options={chartExample1.options}
-                        getDatasetAtEvent={(e) => console.log(e)}
-                      />
-                    </div>
+                  <CardBody style={{ textAlign: 'center' }}>
+                    <i>(not relevant for Stage 4 demo)</i>
                   </CardBody>
                 </Card>
               </Col>
-              <Col xl="4">
-                <Card className="shadow">
-                  <CardHeader className="bg-transparent">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        {/* <h6 className="text-uppercase text-muted ls-1 mb-1">
-                          Performance
-                        </h6> */}
-                        <h2 className="mb-0">Courses Wishlist</h2>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <CardBody>
-                    {/* Chart */}
-                    <div className="chart">
-                      <Bar
-                        data={chartExample2.data}
-                        options={chartExample2.options}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
+              {wishlist}
             </Row>
 
             <Row className="mt-5">
-              <Col className="mb-5 mb-xl-0" xl="8">
-                <Card className="shadow">
+              <Col className="mb-4 mb-xl-0" xl="7">
+                <Card className="shadow" style={{ minHeight: '100%' }}>
                   <CardHeader className="border-0">
                     <Row className="align-items-center">
                       <div className="col">
                         <h3 className="mb-0">Description</h3>
                       </div>
-                      <div className="col text-right">
-                        <Button
-                          color="primary"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                          size="sm"
-                        >
-                          See all
-                        </Button>
-                      </div>
                     </Row>
                   </CardHeader>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Page name</th>
-                        <th scope="col">Visitors</th>
-                        <th scope="col">Unique users</th>
-                        <th scope="col">Bounce rate</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">/argon/</th>
-                        <td>4,569</td>
-                        <td>340</td>
-                        <td>
-                          <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                          46,53%
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">/argon/index.html</th>
-                        <td>3,985</td>
-                        <td>319</td>
-                        <td>
-                          <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                          46,53%
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">/argon/charts.html</th>
-                        <td>3,513</td>
-                        <td>294</td>
-                        <td>
-                          <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                          36,49%
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">/argon/tables.html</th>
-                        <td>2,050</td>
-                        <td>147</td>
-                        <td>
-                          <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                          50,87%
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">/argon/profile.html</th>
-                        <td>1,795</td>
-                        <td>190</td>
-                        <td>
-                          <i className="fas fa-arrow-down text-danger mr-3" />{" "}
-                          46,53%
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
+                  <CardBody style={{ textAlign: 'center' }}>
+                    <i>(not relevant for Stage 4 demo)</i>
+                  </CardBody>
                 </Card>
               </Col>
-              <Col xl="4">
-                <Card className="shadow">
-                  <CardHeader className="border-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h3 className="mb-0">Relevant Courses</h3>
-                      </div>
-                      <div className="col text-right">
-                        <Button
-                          color="primary"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                          size="sm"
-                        >
-                          See all
-                        </Button>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <Table className="align-items-center table-flush" responsive>
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Referral</th>
-                        <th scope="col">Visitors</th>
-                        <th scope="col" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">Facebook</th>
-                        <td>1,480</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">60%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="60"
-                                barClassName="bg-gradient-danger"
-                              />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Facebook</th>
-                        <td>5,480</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">70%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="70"
-                                barClassName="bg-gradient-success"
-                              />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Google</th>
-                        <td>4,807</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">80%</span>
-                            <div>
-                              <Progress max="100" value="80" />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Instagram</th>
-                        <td>3,678</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">75%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="75"
-                                barClassName="bg-gradient-info"
-                              />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">twitter</th>
-                        <td>2,645</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">30%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="30"
-                                barClassName="bg-gradient-warning"
-                              />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card>
-              </Col>
+              <RelevantCourses />
             </Row>
           </Col>
         </Row>

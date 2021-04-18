@@ -15,23 +15,23 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { useLocation, Route, Switch, Redirect } from "react-router-dom";
-import { Container } from "reactstrap";
+import React from 'react';
+import { useLocation, Route, Switch, Redirect } from 'react-router-dom';
+import { Container } from 'reactstrap';
 
 // core components
-import SignInUpNavbar from "components/SignInUpNavbar.js";
-import Footer from "components/Footer.js";
-import routes from "routes.js";
+import SignInUpNavbar from 'components/SignInUpNavbar.jsx';
+import Footer from 'components/Footer.jsx';
+import routes from 'routes.js';
 
 const Authentication = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
 
   React.useEffect(() => {
-    document.body.classList.add("bg-default");
+    document.body.classList.add('bg-default');
     return () => {
-      document.body.classList.remove("bg-default");
+      document.body.classList.remove('bg-default');
     };
   }, []);
   React.useEffect(() => {
@@ -42,7 +42,7 @@ const Authentication = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/auth") {
+      if (prop.layout === '/auth') {
         return (
           <Route
             path={prop.layout + prop.path}

@@ -15,15 +15,15 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import React from 'react';
+import { useLocation, Route, Switch, Redirect } from 'react-router-dom';
 // reactstrap components
-import { Container } from "reactstrap";
+import { Container } from 'reactstrap';
 // core components
-import ProspectusNavbar from "components/ProspectusNavbar.js";
-import Footer from "components/Footer.js";
+import ProspectusNavbar from 'components/ProspectusNavbar.jsx';
+import Footer from 'components/Footer.jsx';
 
-import routes from "routes.js";
+import routes from 'routes.js';
 
 const Dashboard = (props) => {
   const mainContent = React.useRef(null);
@@ -37,7 +37,7 @@ const Dashboard = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/prospectus") {
+      if (prop.layout === '/prospectus') {
         return (
           <Route
             path={prop.layout + prop.path}
