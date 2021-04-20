@@ -32,6 +32,10 @@ const SearchResult = (props) => {
     );
   };
 
+  const View = (courseid) => {
+    props.setCourse(courseid);
+  };
+
   return (
     <Card body style={{ margin: 5 }}>
       <CardTitle tag="h5" style={{ paddingLeft: 10 }}>
@@ -56,7 +60,12 @@ const SearchResult = (props) => {
             </h5>
           </Badge>
           <div className="col">
-            <button type="button" className="btn btn-sm btn-info float-right">
+            <button
+              value={props.courseid}
+              type="button"
+              className="btn btn-sm btn-info float-right"
+              onClick={(e) => View(e.target.value)}
+            >
               View
             </button>
             <button

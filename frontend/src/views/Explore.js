@@ -40,6 +40,7 @@ import {
 import SearchResult from 'components/SearchResult.jsx';
 import Wishlist from 'components/Wishlist';
 import RelevantCourses from 'components/RelevantCourses.jsx';
+import Dependencies from 'components/Dependencies.jsx';
 
 const Explore = () => {
   const username = 'ajackson1';
@@ -49,6 +50,7 @@ const Explore = () => {
 
   const [resultsList, setResultsList] = useState([]);
   const [searchString, setSearchString] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   function generateAPIQuery(queryString) {
     setSearchString(queryString);
@@ -72,8 +74,6 @@ const Explore = () => {
       params: { userid: username, keywords: keywords, dept: dept },
     }).then(
       (response) => {
-        console.log('lipliplip');
-        console.log(response.data.data);
         var results = response.data.data.map(function (item) {
           return [
             item['CourseID'],
@@ -87,10 +87,6 @@ const Explore = () => {
           ];
         });
         setResultsList(results);
-
-        console.log(results);
-
-        // console.log;
       },
       (error) => {
         console.log(error);
@@ -99,6 +95,7 @@ const Explore = () => {
   };
 
   var wishlist = <Wishlist />;
+  var dependencies = <Dependencies courseid={selectedCourse} />;
 
   if (searchString.length > 0) {
     listsElements = resultsList.map((course) => (
@@ -107,6 +104,7 @@ const Explore = () => {
         courseid={course[0]}
         coursename={course[6]}
         description={course[2]}
+        setCourse={setSelectedCourse}
       />
     ));
   } else {
@@ -179,26 +177,9 @@ const Explore = () => {
 
           <Col>
             <Row style={{ padding: -10, marginBottom: -20 }}>
-              <Col className="mb-5 mb-xl-0" xl="8">
-                <Card
-                  className="bg-gradient-default shadow"
-                  style={{ height: '100%' }}
-                >
-                  <CardHeader className="bg-transparent">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h2 className="text-white mb-0">Course Dependencies</h2>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <CardBody style={{ textAlign: 'center' }}>
-                    <i>(not relevant for Stage 4 demo)</i>
-                  </CardBody>
-                </Card>
-              </Col>
+              {dependencies}
               {wishlist}
             </Row>
-
             <Row className="mt-5">
               <Col className="mb-4 mb-xl-0" xl="7">
                 <Card className="shadow" style={{ minHeight: '100%' }}>
