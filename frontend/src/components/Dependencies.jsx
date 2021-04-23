@@ -7,12 +7,7 @@ import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 const exampleGraph = {
   graph: {
     nodes: [
-      {
-        id: 1,
-        label: '<b>  ECE120 </b>',
-        title: 'Introduction to Computing',
-        color: '#fb6340',
-      },
+      { id: 1, label: '<b>  ECE120 </b>', color: '#fb6340' },
       { id: 2, label: '<b> ECE220 </b>', color: '#fb6340' },
       { id: 3, label: '<b> CS173 </b>', color: '#fb6340' },
       { id: 4, label: '<b> CS125 </b>', color: '#fb6340' },
