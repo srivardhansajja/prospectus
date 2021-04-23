@@ -42,10 +42,11 @@ const Search = `
 
 const wishlistQuery = `
   SELECT CourseID_wish, Description 
-  FROM Wishlist 
-  WHERE UserID_wish = ? AND Description LIKE CONCAT('%', ?, '%') 
+  FROM Prospectus.Wishlist 
+  WHERE UserID_wish = ?  
   ORDER BY CourseID_wish asc
 `;
+// AND Description LIKE CONCAT('%', ?, '%')
 
 const wishlistInsert = `
   INSERT INTO Wishlist(UserID_wish, CourseID_wish, Description)

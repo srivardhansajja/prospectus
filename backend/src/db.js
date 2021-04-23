@@ -1,5 +1,6 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 // https://austinhale.medium.com/building-a-node-api-with-express-and-google-cloud-sql-9bda260b040f
+// https://github.com/sidorares/node-mysql2
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

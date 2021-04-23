@@ -15,12 +15,21 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+import axios from "axios";
 import React from "react";
+import GoogleLogin from "react-google-login";
 
 // reactstrap components
-import { Button, Card, CardHeader, Container, Row, Col } from "reactstrap";
+import { Card, CardHeader, Container, Row, Col } from "reactstrap";
 
 const Login = () => {
+  const handleLogin = async (data) => {
+    await axios.post('/login', { idToken: data.tokenId, withCredentials: true })
+    // document.cookie = `token=${resp.data}`
+    // console.log(resp.data);
+    console.log(await axios.get('/user/wishlist', { withCredentials: true }));
+  }
+
   return (
     <>
       <div className="header bg-gradient-info py-7 py-lg-8">
@@ -65,42 +74,16 @@ const Login = () => {
       <Container className="mt--8 pb-8">
         <Row className="justify-content-center">
           <Col lg="6" md="8">
-            <Card className="bg-secondary shadow border-0">
-              <CardHeader className="bg-transparent pb-5">
-                <div className="text-muted text-center mt-4 mb-3">
-                  <small>
-                    <b>Sign in</b> with
-                  </small>
-                </div>
-                <div className="text-center mt-2 mb-4">
-                  <Button
-                    className="btn-neutral btn-icon"
-                    color="default"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <span className="btn-inner--icon">
-                      <img
-                        alt="..."
-                        src={require("../assets/img/google.svg").default}
-                      />
-                    </span>
-                    <span className="btn-inner--text">Google</span>
-                  </Button>
-                </div>
-                <div
-                  style={{ padding: "20" }}
-                  className="text-muted text-center"
-                >
-                  <small style={{ margin: "20" }}>
-                    Don't have an account yet?{" "}
-                    <a className="font-weight-bold" href="/auth/register">
-                      <u>Sign up</u>
-                    </a>
-                  </small>
-                </div>
-              </CardHeader>
-            </Card>
+
+            <div className="text-center mt-2 mb-2">
+              <GoogleLogin className="justify-content-center"
+                clientId="293807431976-vmcdk2a59qaf0cgq8nlr2fo8qo8bp5ti"
+                buttonText="Login with Google"
+                onSuccess={handleLogin}
+                onFailure={(err) => console.log(err)}
+                cookiePolicy={'single_host_origin'}
+              />
+            </div>
           </Col>
         </Row>
       </Container>
