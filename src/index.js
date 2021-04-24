@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
@@ -14,12 +15,13 @@ const connection = require('./db');
 const queries = require('./queries');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ origin: true, credentials: true }));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 // eslint-disable-next-line consistent-return
@@ -35,11 +37,6 @@ function authUser(req, res, next) {
     next();
   });
 }
-
-// route for home
-app.get('/', (req, res) => {
-  res.send('Home route reached!');
-});
 
 app.post('/login', async (req, res) => {
   const { idToken } = req.body;
@@ -180,10 +177,15 @@ app.get('/user/coursesTaken', (req, res) => {
   });
 });
 
-// app.get("/:param", (req, res) => {
-//   res.send(`Hello World, ${req.params.param}`);
-// });
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
+});
+
+process.on('SIGINT', () => {
+  connection.destroy();
+  process.exit(0);
 });

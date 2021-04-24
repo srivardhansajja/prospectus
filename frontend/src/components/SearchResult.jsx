@@ -14,7 +14,7 @@ const SearchResult = (props) => {
     console.log(courseid);
     console.log(username);
     Axios.post(
-      'http://localhost:3001/user/wishlist',
+      '/user/wishlist',
       {
         userid: username,
         courseid: courseid,
