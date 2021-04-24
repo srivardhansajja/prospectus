@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+import Axios from 'axios';
+
 import {
   Button,
   Card,
@@ -9,6 +12,30 @@ import {
 } from 'reactstrap';
 
 const RelevantCourses = () => {
+  const [relCoursesList, setRelCoursesList] = useState([]);
+
+  const getRelevantCourses = () => {
+    // var keywords_ = searchBarText.replace(' ', '%');
+    Axios.get('http://localhost:3001/user/relevantcourses', {
+      withCredentials: true,
+    }).then(
+      (response) => {
+        console.log(response.data.data);
+        // data = JSON.parse(JSON.stringify(response.data));
+        // console.log(data);
+        var names = response.data.data.map(function (item) {
+          return [item['CourseID_wish'], item['Description']];
+        });
+        console.log(names);
+        setRelCoursesList();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    // return data;
+  };
+
   return (
     <Col xl="5">
       <Card className="shadow">
@@ -18,12 +45,7 @@ const RelevantCourses = () => {
               <h3 className="mb-0">Relevant Courses</h3>
             </div>
             <div className="col text-right">
-              <Button
-                color="info"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-                size="sm"
-              >
+              <Button color="info" onClick={getRelevantCourses} size="sm">
                 Refresh
               </Button>
             </div>

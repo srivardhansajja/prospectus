@@ -48,15 +48,16 @@ app.post('/login', async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
 
-  const {
-    hd, email, name, picture, sub,
-  } = ticket.getPayload();
+  const { hd, email, name, picture, sub } = ticket.getPayload();
 
-  const query = 'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
+  const query =
+    'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
   connection.query(query, [sub, name, email, picture, hd], (err, data) => {
     if (err) res.sendStatus(500);
     // 6 hours
-    const token = jwt.sign({ id: sub }, process.env.TOKEN_SECRET, { expiresIn: '21600s' });
+    const token = jwt.sign({ id: sub }, process.env.TOKEN_SECRET, {
+      expiresIn: '21600s',
+    });
     res.cookie('token', token, {
       httpOnly: true,
       secure: false,
@@ -81,7 +82,7 @@ app.get('/search', (req, res) => {
         data,
         message: 'Search results returned successfully',
       });
-    },
+    }
   );
 });
 
@@ -168,6 +169,21 @@ app.get('/user/coursesTaken', (req, res) => {
       length: Object.keys(data).length,
       data,
       message: 'Courses taken returned successfully',
+    });
+  });
+});
+
+// route for querying all courses in a user's wishlist
+app.get('/user/relevantcourses', authUser, (req, res) => {
+  const sql = queries.relevantCoursesQuery;
+
+  connection.query(sql, [req.user], (err, data) => {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      length: Object.keys(data).length,
+      data,
+      message: "User's relevant courses returned successfully",
     });
   });
 });
