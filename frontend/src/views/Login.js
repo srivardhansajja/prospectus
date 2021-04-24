@@ -16,17 +16,21 @@
 
 */
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import GoogleLogin from "react-google-login";
 
 // reactstrap components
 import { Card, CardHeader, Container, Row, Col } from "reactstrap";
 
 const Login = () => {
-  const handleLogin = async (data) => {
-    await axios.post('/login', { idToken: data.tokenId, withCredentials: true })
-    // document.cookie = `token=${resp.data}`
-    // console.log(resp.data);
+
+
+  const [userData, setUserData] = useState();
+  const handleLogin = async ({ tokenId }) => {
+    await axios.post('/login', { idToken: tokenId, withCredentials: true })
+    const resp = await axios.get('/user/profile', { withCredentials: true });
+    const [info] = resp.data
+    setUserData(info);
     console.log(await axios.get('/user/wishlist', { withCredentials: true }));
   }
 
@@ -74,16 +78,17 @@ const Login = () => {
       <Container className="mt--8 pb-8">
         <Row className="justify-content-center">
           <Col lg="6" md="8">
-
-            <div className="text-center mt-2 mb-2">
-              <GoogleLogin className="justify-content-center"
-                clientId="293807431976-vmcdk2a59qaf0cgq8nlr2fo8qo8bp5ti"
-                buttonText="Login with Google"
-                onSuccess={handleLogin}
-                onFailure={(err) => console.log(err)}
-                cookiePolicy={'single_host_origin'}
-              />
-            </div>
+            {userData ? <h1 className="text-center text-white">
+              Hi {userData.Name}!
+            </h1> : <div className="text-center mt-2 mb-2">
+                <GoogleLogin className="justify-content-center"
+                  clientId="293807431976-vmcdk2a59qaf0cgq8nlr2fo8qo8bp5ti"
+                  buttonText="Login with Google"
+                  onSuccess={handleLogin}
+                  onFailure={(err) => console.log(err)}
+                  cookiePolicy={'single_host_origin'}
+                />
+              </div>}
           </Col>
         </Row>
       </Container>
