@@ -34,6 +34,7 @@ const Wishlist = () => {
   const getWishlist = () => {
     var keywords_ = searchBarText.replace(' ', '%');
     Axios.get('/user/wishlist', {
+      withCredentials: true,
       params: { userid: username, keywords: keywords_ },
     }).then(
       (response) => {

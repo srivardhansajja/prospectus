@@ -13,10 +13,14 @@ const SearchResult = (props) => {
   const AddCourseToWishlist = (courseid) => {
     console.log(courseid);
     console.log(username);
-    Axios.post('/user/wishlist', {
-      userid: username,
-      courseid: courseid,
-    }).then(
+    Axios.post(
+      '/user/wishlist',
+      {
+        userid: username,
+        courseid: courseid,
+      },
+      { withCredentials: true }
+    ).then(
       (response) => {
         if (response.data.status === 400) {
           window.alert(
