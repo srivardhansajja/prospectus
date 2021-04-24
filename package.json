@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=dev nodemon src/index.js",
-    "start-prod": "NODE_ENV=prod node src/index.js",
+    "start": "NODE_ENV=prod nodemon src/index.js",
+    "start-dev": "NODE_ENV=dev nodemon src/index.js",
     "test": "mocha --exit"
   },
   "keywords": [],
@@ -22,13 +22,13 @@
     "google-auth-library": "^7.0.4",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.7"
   },
   "devDependencies": {
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "mocha": "^8.3.0",
-    "nodemon": "^2.0.7"
+    "mocha": "^8.3.0"
   }
 }

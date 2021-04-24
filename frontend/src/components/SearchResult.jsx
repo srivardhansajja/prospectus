@@ -13,7 +13,7 @@ const SearchResult = (props) => {
   const AddCourseToWishlist = (courseid) => {
     console.log(courseid);
     console.log(username);
-    Axios.post('http://localhost:3001/user/wishlist', {
+    Axios.post('/user/wishlist', {
       userid: username,
       courseid: courseid,
     }).then(

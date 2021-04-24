@@ -70,7 +70,7 @@ const Explore = () => {
   const getSearchResults = (queryString) => {
     generateAPIQuery(queryString.toLowerCase());
 
-    Axios.get('http://localhost:3001/search', {
+    Axios.get('/search', {
       params: { userid: username, keywords: keywords, dept: dept },
     }).then(
       (response) => {
