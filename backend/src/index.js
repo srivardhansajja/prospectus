@@ -27,10 +27,10 @@ function authUser(req, res, next) {
   const { token } = req.cookies;
   if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.TOKEN_SECRET, (err, { id }) => {
-    if (err) return res.sendStatus(403);
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, data) => {
+    if (err || !data?.id) return res.sendStatus(403);
 
-    req.user = id;
+    req.user = data?.id;
 
     next();
   });
@@ -83,6 +83,14 @@ app.get('/search', (req, res) => {
       });
     },
   );
+});
+
+app.get('/user/profile', authUser, (req, res) => {
+  connection.query('SELECT * From Users WHERE UserId = ?', [req.user], (err, data) => {
+    if (err) throw err;
+
+    res.json(data);
+  });
 });
 
 // route for querying all courses in a user's wishlist
