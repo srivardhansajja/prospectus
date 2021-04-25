@@ -41,6 +41,7 @@ import SearchResult from 'components/SearchResult.jsx';
 import Wishlist from 'components/Wishlist';
 import RelevantCourses from 'components/RelevantCourses.jsx';
 import Dependencies from 'components/Dependencies.jsx';
+import CourseDescription from 'components/CourseDescription.jsx';
 
 const Explore = () => {
   const username = 'ajackson1';
@@ -181,20 +182,7 @@ const Explore = () => {
               {wishlist}
             </Row>
             <Row className="mt-5">
-              <Col className="mb-4 mb-xl-0" xl="7">
-                <Card className="shadow" style={{ minHeight: '100%' }}>
-                  <CardHeader className="border-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h3 className="mb-0">Description</h3>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <CardBody style={{ textAlign: 'center' }}>
-                    <i>(not relevant for Stage 4 demo)</i>
-                  </CardBody>
-                </Card>
-              </Col>
+              <CourseDescription courseid={selectedCourse} />
               <RelevantCourses />
             </Row>
           </Col>

@@ -72,6 +72,11 @@ const coursesTakenQuery = `
   WHERE UserID_ct = ?
 `;
 
+const coursesTakenInsert = `
+  INSERT INTO CoursesTaken(UserID_ct, CourseID_ct)
+  VALUE (?, ?)
+`;
+
 const relevantCoursesQuery = `
   SELECT * FROM Courses WHERE CourseID IN
     (SELECT CourseID_fr FROM 
@@ -101,6 +106,11 @@ const relevantCoursesQuery = `
   ORDER BY AverageGPA desc
 `;
 
+const courseDescQuery = `
+  SELECT * FROM Courses
+  WHERE CourseID = ?
+`;
+
 module.exports = {
   Search,
   wishlistQuery,
@@ -109,4 +119,6 @@ module.exports = {
   wishlistDelete,
   coursesTakenQuery,
   relevantCoursesQuery,
+  courseDescQuery,
+  coursesTakenInsert,
 };
