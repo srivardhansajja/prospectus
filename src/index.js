@@ -197,6 +197,45 @@ app.get('/user/relevantcourses', authUser, (req, res) => {
   });
 });
 
+// route for querying description of a course
+app.get('/user/coursedescription', (req, res) => {
+  const sql = queries.courseDescQuery;
+  const { courseid } = req.query;
+
+  connection.query(sql, [courseid], (err, data) => {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      length: Object.keys(data).length,
+      data,
+      message: 'Course description returned successfully',
+    });
+  });
+});
+
+// route for adding entry to a user's wishlist
+app.post('/user/coursesTaken', authUser, (req, res) => {
+  const sql = queries.coursesTakenInsert;
+  const { courseid } = req.body;
+
+  // we probably need to validate the university ID here? for searching
+  connection.query(sql, [req.user, courseid], (err, data) => {
+    if (err) {
+      res.json({
+        status: 400,
+        message: 'Duplicate',
+      });
+    } else {
+      res.json({
+        status: 200,
+        length: Object.keys(data).length,
+        data,
+        message: "Course added to user's taken courses list successfully",
+      });
+    }
+  });
+});
+
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });

@@ -8,7 +8,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Progress,
   Row,
   Table,
   Col,
@@ -23,16 +22,9 @@ const RelevantCourses = () => {
       params: {},
     }).then(
       (response) => {
-        // console.log(response.data.data);
-        // data = JSON.parse(JSON.stringify(response.data));
-        // console.log(data);
-
         var names = response.data.data.map(function (item) {
           return [item['CourseID'], item['CourseName'], item['AverageGPA']];
         });
-
-        console.log(names);
-
         setRelCoursesList(names);
       },
       (error) => {
@@ -84,41 +76,7 @@ const RelevantCourses = () => {
                 <th scope="col">Average GPA</th>
               </tr>
             </thead>
-            <tbody>
-              {listsElements}
-              {/* <tr>
-                <th scope="row">ECE 110</th>
-                <td>Intro to Electronics</td>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <span className="mr-2">3.40</span>
-                    <div>
-                      <Progress
-                        max="100"
-                        value="85"
-                        barClassName="bg-gradient-success"
-                      />
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">ECE 120</th>
-                <td>Intro to Computing</td>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <span className="mr-2">3.04</span>
-                    <div>
-                      <Progress
-                        max="100"
-                        value="76"
-                        barClassName="bg-gradient-warning"
-                      />
-                    </div>
-                  </div>
-                </td>
-              </tr> */}
-            </tbody>
+            <tbody>{listsElements}</tbody>
           </Table>
         </CardBody>
       </Card>
