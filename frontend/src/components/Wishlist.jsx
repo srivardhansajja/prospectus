@@ -84,25 +84,26 @@ const Wishlist = () => {
             </div>
           </Row>
           <Row className="pl-0 align-items-center">
-            <Form className="ml-2 mt-2 mb--1 navbar-search">
-              <FormGroup className="mb-0">
-                <InputGroup
-                  className="input-group-alternative"
-                  style={{ width: 400 }}
-                >
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="fas fa-search" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Search"
-                    onChange={(e) => setSearchBarText(e.target.value)}
-                    type="text"
-                  />
-                </InputGroup>
-              </FormGroup>
-            </Form>
+            <div className="col">
+              <Form className="ml-2 mt-2 mb--1 navbar-search">
+                <FormGroup className="mb-0">
+                  <InputGroup
+                    className="input-group-alternative"
+                  >
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fas fa-search" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="Search"
+                      onChange={(e) => setSearchBarText(e.target.value)}
+                      type="text"
+                    />
+                  </InputGroup>
+                </FormGroup>
+              </Form>
+            </div>
           </Row>
         </CardHeader>
         <CardBody
