@@ -4,37 +4,6 @@ import Graph from 'react-graph-vis';
 
 import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 
-const exampleGraph = {
-  graph: {
-    nodes: [
-      { id: 1, label: '<b>  ECE120 </b>', color: '#fb6340' },
-      { id: 2, label: '<b> ECE220 </b>', color: '#fb6340' },
-      { id: 3, label: '<b> CS173 </b>', color: '#fb6340' },
-      { id: 4, label: '<b> CS125 </b>', color: '#fb6340' },
-      { id: 5, label: '<b> CS225 </b>', color: '#11cdef' },
-      { id: 6, label: '<b> CS440 </b>', color: '#2dce89' },
-      { id: 7, label: '<b> ECE374 </b>', color: '#2dce89' },
-      { id: 8, label: '<b> ECE473 </b>', color: '#2dce89' },
-      { id: 9, label: '<b> CS411 </b>', color: '#2dce89' },
-      { id: 10, label: '<b> CS511 </b>', color: '#2dce89' },
-      { id: 11, label: '<b> CS511 </b>', color: '#2dce89' },
-    ],
-    edges: [
-      { from: 1, to: 2 },
-      { from: 2, to: 3 },
-      { from: 3, to: 5 },
-      { from: 4, to: 3 },
-      { from: 3, to: 5 },
-      { from: 5, to: 6 },
-      { from: 5, to: 7 },
-      { from: 7, to: 8 },
-      { from: 5, to: 9 },
-      { from: 9, to: 10 },
-      { from: 5, to: 11 },
-    ],
-  },
-};
-
 const options = {
   height: '100%',
   interaction: {
@@ -79,64 +48,37 @@ const Dependencies = (props) => {
 
   const events = {
     doubleClick: ({ nodes }) => {
-      console.log(nodes);
-      if (nodes.length > 0) {
-        let cid = courseGraph.graph.nodes
-          .find((o) => o.id === parseInt(nodes))
-          .label.split(' ')[1];
-        setCid(cid);
+      const [node] = nodes
+      if (node) {
+        setCid(node)
       }
     },
   };
 
   useEffect(() => {
-    console.log(props.courseid);
-    if (props.courseid != null) getGraph(props.courseid);
+    const getGraph = async (courseId) => {
+      const resp = await Axios.get(`/relational/${courseId}`, { params: { depth: 1 } });
+      const nodesArr = [courseId].concat(resp.data.map(({ to, from }) => [to, from]).flat())
+      const nodes = [...new Set(nodesArr)].map(e => ({ id: e, label: `<b>${e}</b>`, color: '#555' }));
+      const result = {
+        graph: {
+          nodes,
+          edges: [
+            ...resp.data
+          ]
+        }
+      }
+      console.log(result)
+      setCourseGraph(result)
+    }
+    if (cid)
+      getGraph(cid);
   }, [props.courseid, cid]);
 
   const resetGraph = () => {
     if (network != null) network.fit();
   };
 
-  const getGraph = (courseid_) => {
-    // Axios.get('http://localhost:3001/graph', {
-    //   params: { courseid: courseid_ },
-    // }).then(
-    //   (response) => {
-    //     setCourseGraph(response.data);
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //   }
-    // );
-
-    // delete after implementing API
-    if (courseid_ != null) {
-      const exampleGraph_ = JSON.parse(JSON.stringify(exampleGraph));
-      setCourseGraph(exampleGraph_);
-    }
-    ///////////////////
-
-    if (network != null) network.fit();
-  };
-
-  var graphHTML;
-  if (courseGraph == null) {
-    graphHTML = (
-      <>
-        <i>(Select a course to view dependencies and prerequisites)</i>
-      </>
-    );
-  } else {
-    graphHTML = (
-      <Graph
-        graph={courseGraph.graph}
-        options={options}
-        events={events}
-        getNetwork={(network) => setNetwork(network)}
-      />
-    );
-  }
 
   return (
     <>
@@ -160,7 +102,20 @@ const Dependencies = (props) => {
               </div>
             </Row>
           </CardHeader>
-          <CardBody style={{ textAlign: 'center' }}>{graphHTML}</CardBody>
+          <CardBody style={{ textAlign: 'center' }}>
+            {courseGraph ?
+              <Graph
+                graph={courseGraph.graph}
+                options={options}
+                events={events}
+                getNetwork={(network) => setNetwork(network)}
+              />
+              :
+              <>
+                <i>(Select a course to view dependencies and prerequisites)</i>
+              </>
+            }
+          </CardBody>
         </Card>
       </Col>
     </>
