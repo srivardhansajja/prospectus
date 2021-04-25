@@ -139,7 +139,7 @@ app.post('/user/wishlist/update', authUser, (req, res) => {
   const sql = queries.wishlistUpdate;
   const { userid, courseid, desc } = req.body;
 
-  connection.query(sql, [desc, courseid, userid], (err, data) => {
+  connection.query(sql, [desc, courseid, req.user], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,
@@ -151,11 +151,13 @@ app.post('/user/wishlist/update', authUser, (req, res) => {
 });
 
 // route for deleting entry from a user's wishlist
-app.delete('/user/wishlist', (req, res) => {
+app.delete('/user/wishlist', authUser, (req, res) => {
   const sql = queries.wishlistDelete;
   const { userid, courseid } = req.query;
 
-  connection.query(sql, [userid, courseid], (err, data) => {
+  console.log(req.user);
+
+  connection.query(sql, [req.user, courseid], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,

@@ -25,6 +25,7 @@ const WishlistItem = (props) => {
   const DeleteCourseFromWishlist = (courseid) => {
     console.log(username, courseid);
     Axios.delete('/user/wishlist', {
+      withCredentials: true,
       params: { userid: username, courseid: courseid },
     }).then(
       (response) => {
@@ -39,11 +40,15 @@ const WishlistItem = (props) => {
 
   const UpdateCourseInWishlist = () => {
     console.log(username, props.courseid, courseDesc);
-    Axios.post('/user/wishlist/update', {
-      userid: username,
-      courseid: props.courseid,
-      desc: courseDesc,
-    }).then(
+    Axios.post(
+      '/user/wishlist/update',
+      {
+        userid: username,
+        courseid: props.courseid,
+        desc: courseDesc,
+      },
+      { withCredentials: true }
+    ).then(
       (response) => {
         console.log(response.data);
         props.onChange();
