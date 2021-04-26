@@ -65,7 +65,8 @@ const Authentication = (props) => {
           <Redirect from="*" to="/auth/login" />
         </Switch>
       </div>
-      <footer className="py-5">
+
+      <footer style={{ marginTop: 200 }} className="py-5">
         <div>
           <Container>
             <Footer />

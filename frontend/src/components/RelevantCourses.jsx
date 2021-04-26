@@ -1,128 +1,142 @@
+import React, { useState, useEffect, useContext } from 'react';
+import Axios from 'axios';
+
+import RelevantCoursesItem from './RelevantCoursesItem.jsx';
+import { Authorization } from '../index.js';
+
 import {
   Button,
   Card,
   CardHeader,
-  Progress,
+  CardBody,
   Row,
   Table,
   Col,
 } from 'reactstrap';
 
-const RelevantCourses = () => {
-  return (
-    <Col xl="5">
-      <Card className="shadow">
-        <CardHeader className="border-0">
-          <Row className="align-items-center">
-            <div className="col">
-              <h3 className="mb-0">Relevant Courses</h3>
-            </div>
-            <div className="col text-right">
-              <Button
-                color="info"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-                size="sm"
-              >
-                Refresh
-              </Button>
-            </div>
-          </Row>
-        </CardHeader>
-        <Table className="align-items-center table-flush" responsive>
-          <thead className="thead-light">
-            <tr>
-              <th scope="col">Course ID</th>
-              <th scope="col">Course Name</th>
-              <th scope="col">Average GPA</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">ECE 110</th>
-              <td>Intro to Electronics</td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2">3.40</span>
-                  <div>
-                    <Progress
-                      max="100"
-                      value="85"
-                      barClassName="bg-gradient-success"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">ECE 120</th>
-              <td>Intro to Computing</td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2">3.04</span>
-                  <div>
-                    <Progress
-                      max="100"
-                      value="76"
-                      barClassName="bg-gradient-warning"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">CS 125</th>
-              <td>Intro to Comp Sci</td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2">3.45</span>
-                  <div>
-                    <Progress
-                      max="100"
-                      value="86"
-                      barClassName="bg-gradient-success"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">CS 411</th>
-              <td>Database Systems</td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2">3.51</span>
-                  <div>
-                    <Progress
-                      max="100"
-                      value="88"
-                      barClassName="bg-gradient-success"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">ECE 313</th>
-              <td>Probability in Engr</td>
-              <td>
-                <div className="d-flex align-items-center">
-                  <span className="mr-2">2.68</span>
-                  <div>
-                    <Progress
-                      max="100"
-                      value="67"
-                      barClassName="bg-gradient-danger"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      </Card>
-    </Col>
-  );
+const RelevantCourses = (props) => {
+  const [relCoursesList, setRelCoursesList] = useState([]);
+  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
+
+  const getRelCourses = () => {
+    if (isAuthorized)
+      Axios.get('/user/relevantcourses', {
+        withCredentials: true,
+        params: {},
+      }).then(
+        (response) => {
+          var names = response.data.data.map(function (item) {
+            return [item['CourseID'], item['CourseName'], item['AverageGPA']];
+          });
+          setRelCoursesList(names);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  useEffect(() => {
+    getRelCourses();
+  }, []);
+
+  if (props.page == "dashboard") {
+    var listsElements = relCoursesList.map((course) => (
+      <RelevantCoursesItem
+        key={course}
+        page="dashboard"
+        courseid={course[0]}
+        coursename={course[1]}
+        averageGPA={course[2]}
+      ></RelevantCoursesItem>
+    ));
+  } else if (props.page == "explore") {
+    var listsElements = relCoursesList.map((course) => (
+      <RelevantCoursesItem
+        key={course}
+        page="explore"
+        courseid={course[0]}
+        coursename={course[1]}
+        averageGPA={course[2]}
+      ></RelevantCoursesItem>
+    ));
+  }
+  
+  if (props.page == "dashboard") {
+    return (
+      <Col xl="13">
+        <Card className="shadow">
+          <CardHeader className="border-0">
+            <Row className="align-items-center">
+              <div className="col">
+                <h3 className="mb-0">Relevant Courses</h3>
+              </div>
+              <div className="col text-right">
+                <Button color="info" onClick={getRelCourses} size="sm">
+                  Refresh
+                </Button>
+              </div>
+            </Row>
+          </CardHeader>
+          <CardBody
+            style={{
+              padding: 0,
+              overflowY: 'auto',
+              height: 290,
+            }}
+          >
+            <Table className="align-items-center table-flush" responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col">Course ID</th>
+                  <th scope="col">Course Name</th>
+                  <th scope="col">Average GPA</th>
+                </tr>
+              </thead>
+              <tbody>{listsElements}</tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </Col>
+    );
+  } else if (props.page == "explore") {
+    return (
+      <Col xl="5">
+        <Card className="shadow">
+          <CardHeader className="border-0">
+            <Row className="align-items-center">
+              <div className="col">
+                <h3 className="mb-0">Relevant Courses</h3>
+              </div>
+              <div className="col text-right">
+                <Button color="info" onClick={getRelCourses} size="sm">
+                  Refresh
+                </Button>
+              </div>
+            </Row>
+          </CardHeader>
+          <CardBody
+            style={{
+              padding: 0,
+              overflowY: 'auto',
+              height: 260,
+            }}
+          >
+            <Table className="align-items-center table-flush" responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col">Course ID</th>
+                  <th scope="col">Course Name</th>
+                  <th scope="col">Average GPA</th>
+                </tr>
+              </thead>
+              <tbody>{listsElements}</tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </Col>
+    );
+  }
 };
 
 export default RelevantCourses;

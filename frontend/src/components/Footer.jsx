@@ -21,7 +21,10 @@ const Footer = () => {
       </Col>
 
       <Col xl="4">
-        <Nav className="nav-footer justify-content-center justify-content-xl-end">
+        <Nav
+          className="nav-footer justify-content-center justify-content-xl-end"
+          style={{ marginTop: -20, marginBottom: -20 }}
+        >
           <NavItem>
             <NavLink
               href="https://wiki.illinois.edu/wiki/display/CS411AASP21/Project+YesSQL"

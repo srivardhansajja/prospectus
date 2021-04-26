@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 // reactstrap components
 import {
@@ -30,7 +30,17 @@ import {
   Col,
 } from 'reactstrap';
 
+import { Authorization } from '../index.js';
+
 const SignInUpNavbar = () => {
+  const isAuthorized = useContext(Authorization)[0];
+  const [navbarLink, setNavbarLink] = useState('/auth/login');
+
+  useEffect(() => {
+    if (isAuthorized) setNavbarLink('/prospectus/explore');
+    else setNavbarLink('/auth/login');
+  }, [isAuthorized]);
+
   return (
     <>
       <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
@@ -43,7 +53,8 @@ const SignInUpNavbar = () => {
               backgroundColor: 'black',
               borderRadius: '10px',
             }}
-            href="/"
+            to={navbarLink}
+            tag={Link}
           >
             &nbsp; PROSPECTUS &nbsp;
           </NavbarBrand>
@@ -62,7 +73,7 @@ const SignInUpNavbar = () => {
                       backgroundColor: 'black',
                       borderRadius: '10px',
                     }}
-                    href="/"
+                    href="/auth/login"
                   >
                     &nbsp; PROSPECTUS &nbsp;
                   </NavbarBrand>
@@ -76,26 +87,6 @@ const SignInUpNavbar = () => {
               </Row>
             </div>
             <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink
-                  className="nav-link-icon"
-                  to="/prospectus/dashboard"
-                  tag={Link}
-                >
-                  <i className="ni ni-app" />
-                  <span className="nav-link-inner--text">Dashboard</span>
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className="nav-link-icon"
-                  to="/auth/register"
-                  tag={Link}
-                >
-                  <i className="ni ni-circle-08" />
-                  <span className="nav-link-inner--text">Register</span>
-                </NavLink>
-              </NavItem>
               <NavItem>
                 <NavLink className="nav-link-icon" to="/auth/login" tag={Link}>
                   <i className="ni ni-key-25" />

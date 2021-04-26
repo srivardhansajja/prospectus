@@ -45,15 +45,16 @@ app.post('/login', async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
 
-  const {
-    hd, email, name, picture, sub,
-  } = ticket.getPayload();
+  const { hd, email, name, picture, sub } = ticket.getPayload();
 
-  const query = 'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
+  const query =
+    'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
   connection.query(query, [sub, name, email, picture, hd], (err, data) => {
     if (err) res.sendStatus(500);
     // 6 hours
-    const token = jwt.sign({ id: sub }, process.env.TOKEN_SECRET, { expiresIn: '21600s' });
+    const token = jwt.sign({ id: sub }, process.env.TOKEN_SECRET, {
+      expiresIn: '21600s',
+    });
     res.cookie('token', token, {
       httpOnly: true,
       secure: false,
@@ -78,16 +79,20 @@ app.get('/search', (req, res) => {
         data,
         message: 'Search results returned successfully',
       });
-    },
+    }
   );
 });
 
 app.get('/user/profile', authUser, (req, res) => {
-  connection.query('SELECT * From Users WHERE UserId = ?', [req.user], (err, data) => {
-    if (err) throw err;
+  connection.query(
+    'SELECT * From Users WHERE UserId = ?',
+    [req.user],
+    (err, data) => {
+      if (err) throw err;
 
-    res.json(data);
-  });
+      res.json(data);
+    }
+  );
 });
 
 // route for querying all courses in a user's wishlist
@@ -134,7 +139,7 @@ app.post('/user/wishlist/update', authUser, (req, res) => {
   const sql = queries.wishlistUpdate;
   const { userid, courseid, desc } = req.body;
 
-  connection.query(sql, [desc, courseid, userid], (err, data) => {
+  connection.query(sql, [desc, courseid, req.user], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,
@@ -146,11 +151,13 @@ app.post('/user/wishlist/update', authUser, (req, res) => {
 });
 
 // route for deleting entry from a user's wishlist
-app.delete('/user/wishlist', (req, res) => {
+app.delete('/user/wishlist', authUser, (req, res) => {
   const sql = queries.wishlistDelete;
   const { userid, courseid } = req.query;
 
-  connection.query(sql, [userid, courseid], (err, data) => {
+  console.log(req.user);
+
+  connection.query(sql, [req.user, courseid], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,
@@ -162,11 +169,11 @@ app.delete('/user/wishlist', (req, res) => {
 });
 
 // route for querying all courses that a user has taken
-app.get('/user/coursesTaken', (req, res) => {
+app.get('/user/coursesTaken', authUser, (req, res) => {
   const sql = queries.coursesTakenQuery;
   const { userid } = req.query;
 
-  connection.query(sql, [userid], (err, data) => {
+  connection.query(sql, [req.user], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,
@@ -174,6 +181,60 @@ app.get('/user/coursesTaken', (req, res) => {
       data,
       message: 'Courses taken returned successfully',
     });
+  });
+});
+
+// route for querying all courses relevant to a user
+app.get('/user/relevantcourses', authUser, (req, res) => {
+  const sql = queries.relevantCoursesQuery;
+
+  connection.query(sql, [req.user], (err, data) => {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      length: Object.keys(data).length,
+      data,
+      message: "User's relevant courses returned successfully",
+    });
+  });
+});
+
+// route for querying description of a course
+app.get('/user/coursedescription', (req, res) => {
+  const sql = queries.courseDescQuery;
+  const { courseid } = req.query;
+
+  connection.query(sql, [courseid], (err, data) => {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      length: Object.keys(data).length,
+      data,
+      message: 'Course description returned successfully',
+    });
+  });
+});
+
+// route for adding entry to a user's taken courses list
+app.post('/user/coursesTaken', authUser, (req, res) => {
+  const sql = queries.coursesTakenInsert;
+  const { courseid } = req.body;
+  console.log(courseid);
+  // we probably need to validate the university ID here? for searching
+  connection.query(sql, [req.user, courseid], (err, data) => {
+    if (err) {
+      res.json({
+        status: 400,
+        message: 'Duplicate',
+      });
+    } else {
+      res.json({
+        status: 200,
+        length: Object.keys(data).length,
+        data,
+        message: "Course added to user's taken courses list successfully",
+      });
+    }
   });
 });
 

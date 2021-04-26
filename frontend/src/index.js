@@ -15,30 +15,45 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
-import "assets/plugins/nucleo/css/nucleo.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "assets/scss/argon-dashboard-react.scss";
+import 'assets/plugins/nucleo/css/nucleo.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'assets/scss/argon-dashboard-react.scss';
 
-import DashboardLayout from "layouts/Dashboard.js";
-import AuthenticationLayout from "layouts/Authentication.js";
+import DashboardLayout from 'layouts/Dashboard.js';
+import AuthenticationLayout from 'layouts/Authentication.js';
 
-ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route
-        path="/prospectus"
-        render={(props) => <DashboardLayout {...props} />}
-      />
-      <Route
-        path="/auth"
-        render={(props) => <AuthenticationLayout {...props} />}
-      />
-      <Redirect from="/" to="/prospectus/dashboard" />
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById("root")
-);
+export const Authorization = React.createContext([false, () => {}]);
+
+// const ThemeContext = React.createContext(["light", () => {}]);
+
+const App = () => {
+  // const [isAuthorized, setIsAuthorized] = useState(false);
+  const authHook = useState(false);
+
+  return (
+    <Authorization.Provider value={authHook}>
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path="/prospectus"
+            render={(props) => <DashboardLayout {...props} />}
+          />
+          <Route
+            path="/auth"
+            render={(props) => <AuthenticationLayout {...props} />}
+          />
+          <Redirect from="/" to="/auth/login" />
+        </Switch>
+      </BrowserRouter>
+    </Authorization.Provider>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+// export default authorization;
+// export default App;

@@ -25,6 +25,7 @@ const WishlistItem = (props) => {
   const DeleteCourseFromWishlist = (courseid) => {
     console.log(username, courseid);
     Axios.delete('/user/wishlist', {
+      withCredentials: true,
       params: { userid: username, courseid: courseid },
     }).then(
       (response) => {
@@ -36,14 +37,19 @@ const WishlistItem = (props) => {
       }
     );
   };
-
+  
   const UpdateCourseInWishlist = () => {
+    toggle();
     console.log(username, props.courseid, courseDesc);
-    Axios.post('/user/wishlist/update', {
-      userid: username,
-      courseid: props.courseid,
-      desc: courseDesc,
-    }).then(
+    Axios.post(
+      '/user/wishlist/update',
+      {
+        userid: username,
+        courseid: props.courseid,
+        desc: courseDesc,
+      },
+      { withCredentials: true }
+    ).then(
       (response) => {
         console.log(response.data);
         props.onChange();
@@ -53,6 +59,13 @@ const WishlistItem = (props) => {
       }
     );
   };
+
+  var truncateValue;
+  if (props.page == "dashboard") {
+    truncateValue = 50
+  } else if (props.page == "explore") {
+    truncateValue = 20
+  }
 
   return (
     <>
@@ -109,7 +122,7 @@ const WishlistItem = (props) => {
         <td
           style={{ verticalAlign: 'middle', paddingLeft: 0, paddingRight: 0 }}
         >
-          {truncate(props.description, 20)}
+          {truncate(props.description, truncateValue)}
         </td>
         <td>
           <button

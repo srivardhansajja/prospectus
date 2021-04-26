@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { Authorization } from 'index';
+import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import {
   DropdownMenu,
@@ -16,6 +18,7 @@ import {
 
 const ProspectusNavbar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const setIsAuthorized = useContext(Authorization)[1];
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -30,7 +33,8 @@ const ProspectusNavbar = (props) => {
             backgroundColor: 'black',
             borderRadius: '10px',
           }}
-          href="/"
+          to="/prospectus/explore"
+          tag={Link}
         >
           &nbsp; PROSPECTUS &nbsp;
         </NavbarBrand>
@@ -41,7 +45,8 @@ const ProspectusNavbar = (props) => {
               <NavLink
                 className="text-white"
                 style={{ fontWeight: 'bold', fontSize: '15pt' }}
-                href="/prospectus/dashboard"
+                to="/prospectus/dashboard"
+                tag={Link}
               >
                 <i className="ni ni-app" />
                 &nbsp;Dashboard
@@ -51,7 +56,8 @@ const ProspectusNavbar = (props) => {
               <NavLink
                 className="text-white"
                 style={{ fontWeight: 'bold', fontSize: '15pt' }}
-                href="/prospectus/explore"
+                to="/prospectus/explore"
+                tag={Link}
               >
                 <i className="ni ni-planet" />
                 &nbsp;Explore
@@ -61,7 +67,7 @@ const ProspectusNavbar = (props) => {
         </Collapse>
         <Nav>
           <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
+            <DropdownToggle nav>
               <span className="avatar avatar-sm rounded-circle">
                 <img
                   alt="..."
@@ -70,11 +76,23 @@ const ProspectusNavbar = (props) => {
               </span>
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem href="/prospectus/user-profile">
+              <DropdownItem
+                to="/prospectus/user-profile"
+                tag={Link}
+                style={{ textAlign: 'right' }}
+              >
                 Profile / Settings
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem href="/auth/login">Logout</DropdownItem>
+              <DropdownItem
+                href="/auth/login"
+                onClick={() => {
+                  setIsAuthorized(false);
+                }}
+                style={{ textAlign: 'right' }}
+              >
+                Log Out
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
         </Nav>

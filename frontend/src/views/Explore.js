@@ -15,8 +15,10 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Axios from 'axios';
+
+import { useHistory } from 'react-router-dom';
 
 import departments from '../variables/depts.json';
 
@@ -41,8 +43,15 @@ import SearchResult from 'components/SearchResult.jsx';
 import Wishlist from 'components/Wishlist';
 import RelevantCourses from 'components/RelevantCourses.jsx';
 import Dependencies from 'components/Dependencies.jsx';
+import CourseDescription from 'components/CourseDescription.jsx';
+import { Authorization } from '../index.js';
 
 const Explore = () => {
+  const history = useHistory();
+  const isAuthorized = useContext(Authorization)[0];
+
+  if (!isAuthorized) history.push('/auth/login');
+
   const username = 'ajackson1';
   var keywords = '';
   var dept = '';
@@ -63,8 +72,6 @@ const Explore = () => {
       }
     }
     keywords = words.join('%');
-    console.log(keywords);
-    console.log(dept);
   }
 
   const getSearchResults = (queryString) => {
@@ -94,7 +101,7 @@ const Explore = () => {
     );
   };
 
-  var wishlist = <Wishlist />;
+  var wishlist = <Wishlist page="explore"/>;
   var dependencies = <Dependencies courseid={selectedCourse} />;
 
   if (searchString.length > 0) {
@@ -139,7 +146,7 @@ const Explore = () => {
             xl="3"
           >
             <Card
-              style={{ height: '875px' }}
+              style={{ height: '840px' }}
               className="bg-gradient-default shadow"
             >
               <CardHeader className="bg-transparent">
@@ -181,21 +188,8 @@ const Explore = () => {
               {wishlist}
             </Row>
             <Row className="mt-5">
-              <Col className="mb-4 mb-xl-0" xl="7">
-                <Card className="shadow" style={{ minHeight: '100%' }}>
-                  <CardHeader className="border-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h3 className="mb-0">Description</h3>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <CardBody style={{ textAlign: 'center' }}>
-                    <i>(not relevant for Stage 4 demo)</i>
-                  </CardBody>
-                </Card>
-              </Col>
-              <RelevantCourses />
+              <CourseDescription courseid={selectedCourse} />
+              <RelevantCourses page="explore"/>
             </Row>
           </Col>
         </Row>

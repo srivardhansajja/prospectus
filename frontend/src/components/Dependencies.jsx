@@ -124,17 +124,21 @@ const Dependencies = (props) => {
   if (courseGraph == null) {
     graphHTML = (
       <>
-        <i>(Select a course to view dependencies and prerequisites)</i>
+        <CardBody style={{ textAlign: 'center', marginTop: 40 }}>
+          <i>(Select a course to view dependencies and prerequisites)</i>
+        </CardBody>
       </>
     );
   } else {
     graphHTML = (
-      <Graph
-        graph={courseGraph.graph}
-        options={options}
-        events={events}
-        getNetwork={(network) => setNetwork(network)}
-      />
+      <CardBody style={{ textAlign: 'center' }}>
+        <Graph
+          graph={courseGraph.graph}
+          options={options}
+          events={events}
+          getNetwork={(network) => setNetwork(network)}
+        />
+      </CardBody>
     );
   }
 
@@ -160,7 +164,7 @@ const Dependencies = (props) => {
               </div>
             </Row>
           </CardHeader>
-          <CardBody style={{ textAlign: 'center' }}>{graphHTML}</CardBody>
+          {graphHTML}
         </Card>
       </Col>
     </>
