@@ -1,2 +1,2 @@
 frontend/src/assets/css/* linguist-vendored
-frontend/src/assets/scss/* linguist-vendored
+frontend/src/assets/scss/**/* linguist-vendored
