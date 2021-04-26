@@ -191,8 +191,8 @@ const Profile = () => {
                       <img
                         alt = "Unable to load. Place a new picture URL in My Account"
                         className="rounded-circle"
-                        // src={UserData ? UserData.Picture : ""}
-                        src = "https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
+                        src={UserData ? UserData.Picture : ""}
+                        // src = "https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
                       />
                     </a>
                   </div>
