@@ -1,2 +1,2 @@
-* linguist-vendored
-*.jsx linguist-vendored=false
+frontend/assets/css/* linguist-vendored
+frontend/assets/scss/* linguist-vendored
