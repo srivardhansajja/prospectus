@@ -85,7 +85,7 @@ const Wishlist = () => {
           </Row>
           <Row className="pl-0 align-items-center">
             <div className="col">
-              <Form className="ml-2 mt-2 mb--1 navbar-search">
+              <Form className="mt-2 mb--1 navbar-search">
                 <FormGroup className="mb-0">
                   <InputGroup
                     className="input-group-alternative"

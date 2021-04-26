@@ -21,6 +21,8 @@ import Chart from 'chart.js';
 // react plugin used to create charts
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
+import Wishlist from 'components/Wishlist';
+//
 import {
   Card,
   CardHeader,
@@ -82,29 +84,7 @@ const Dashboard = (props) => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col xl="4">
-                <Card className="shadow">
-                  <CardHeader className="bg-transparent">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        {/* <h6 className="text-uppercase text-muted ls-1 mb-1">
-                          Performance
-                        </h6> */}
-                        <h2 className="mb-0">Courses Wishlist</h2>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <CardBody>
-                    {/* Chart */}
-                    <div className="chart">
-                      <Bar
-                        data={chartExample2.data}
-                        options={chartExample2.options}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
+              <Wishlist page="dashboard"/>;
             </Row>
 
             <Row className="mt-5">
