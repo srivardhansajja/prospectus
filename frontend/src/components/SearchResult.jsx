@@ -3,18 +3,15 @@ import Axios from 'axios';
 import { Card, CardTitle, Badge, CardText } from 'reactstrap';
 
 function truncate(str, n) {
-  if (str !== undefined)
+  if (str)
     return str.length > n ? str.substr(0, n - 1) + '...' : str;
 }
 
 const SearchResult = (props) => {
-  const username = 'ajackson1';
-
   const AddCourseToWishlist = (courseid) => {
     Axios.post(
       '/user/wishlist',
       {
-        userid: username,
         courseid: courseid,
       },
       { withCredentials: true }
