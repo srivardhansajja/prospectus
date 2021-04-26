@@ -21,7 +21,7 @@ const options = {
       blockShifting: false,
       edgeMinimization: false,
       parentCentralization: false,
-      direction: 'LR', // UD, DU, LR, RL
+      direction: 'UD', // UD, DU, LR, RL
       sortMethod: 'directed', // hubsize, directed
       shakeTowards: 'roots', // roots, leaves
     },
