@@ -39,6 +39,7 @@ const WishlistItem = (props) => {
   };
 
   const UpdateCourseInWishlist = () => {
+    toggle();
     console.log(username, props.courseid, courseDesc);
     Axios.post(
       '/user/wishlist/update',

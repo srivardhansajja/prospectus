@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Axios from 'axios';
 
 import RelevantCoursesItem from './RelevantCoursesItem.jsx';
+import { Authorization } from '../index.js';
 
 import {
   Button,
@@ -15,22 +16,24 @@ import {
 
 const RelevantCourses = () => {
   const [relCoursesList, setRelCoursesList] = useState([]);
+  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
 
   const getRelCourses = () => {
-    Axios.get('/user/relevantcourses', {
-      withCredentials: true,
-      params: {},
-    }).then(
-      (response) => {
-        var names = response.data.data.map(function (item) {
-          return [item['CourseID'], item['CourseName'], item['AverageGPA']];
-        });
-        setRelCoursesList(names);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    if (isAuthorized)
+      Axios.get('/user/relevantcourses', {
+        withCredentials: true,
+        params: {},
+      }).then(
+        (response) => {
+          var names = response.data.data.map(function (item) {
+            return [item['CourseID'], item['CourseName'], item['AverageGPA']];
+          });
+          setRelCoursesList(names);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   };
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const RelevantCourses = () => {
           style={{
             padding: 0,
             overflowY: 'auto',
-            height: 295,
+            height: 260,
           }}
         >
           <Table className="align-items-center table-flush" responsive>

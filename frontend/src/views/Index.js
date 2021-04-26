@@ -15,7 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+
+import { useHistory } from 'react-router-dom';
 // javascipt plugin for creating charts
 import Chart from 'chart.js';
 // react plugin used to create charts
@@ -40,9 +42,16 @@ import {
   chartExample2,
 } from 'variables/charts.js';
 
+import { Authorization } from '../index.js';
+
 // import Header from "components/Headers/Header.js";
 
 const Dashboard = (props) => {
+  const history = useHistory();
+  const isAuthorized = useContext(Authorization)[0];
+
+  if (!isAuthorized) history.push('/auth/login');
+
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState('data1');
 

@@ -15,7 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -29,21 +30,28 @@ import {
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
+
+import { Authorization } from '../index.js';
 // core components
 
 const Profile = () => {
+  const history = useHistory();
+  const isAuthorized = useContext(Authorization)[0];
+
+  if (!isAuthorized) history.push('/auth/login');
+
   return (
     <>
       <div
         className="header mt--8 pb-8 pt-5 pt-lg-6 d-flex align-items-center"
         style={{
           backgroundImage:
-            "url(" +
-            require("../assets/img/theme/profile-cover.jpg").default +
-            ")",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
+            'url(' +
+            require('../assets/img/theme/profile-cover.jpg').default +
+            ')',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
         }}
       >
         {/* Mask */}
@@ -81,7 +89,7 @@ const Profile = () => {
                         alt="..."
                         className="rounded-circle"
                         src={
-                          require("../assets/img/theme/team-4-800x800.jpg")
+                          require('../assets/img/theme/team-4-800x800.jpg')
                             .default
                         }
                       />
