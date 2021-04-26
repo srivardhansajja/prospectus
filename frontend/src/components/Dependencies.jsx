@@ -71,8 +71,8 @@ const Dependencies = (props) => {
       console.log(result)
       setCourseGraph(result)
     }
-    if (cid)
-      getGraph(cid);
+    if (cid || props.courseid)
+      getGraph(cid || props.courseid);
   }, [props.courseid, cid]);
 
   const resetGraph = () => {
