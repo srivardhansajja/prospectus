@@ -45,10 +45,11 @@ app.post('/login', async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
 
-  const { hd, email, name, picture, sub } = ticket.getPayload();
+  const {
+    hd, email, name, picture, sub,
+  } = ticket.getPayload();
 
-  const query =
-    'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
+  const query = 'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
   connection.query(query, [sub, name, email, picture, hd], (err, data) => {
     if (err) res.sendStatus(500);
     // 6 hours
@@ -81,7 +82,7 @@ app.get('/user/profile', authUser, (req, res) => {
       if (err) throw err;
 
       res.json(data);
-    }
+    },
   );
 });
 
@@ -226,6 +227,44 @@ app.post('/user/coursesTaken', authUser, (req, res) => {
       });
     }
   });
+});
+
+// DFS traveral where far left last node controls when we send the whole edge graph
+// Kinda a mess with callbacks & recursion lol
+function dfsHelp(courseId, depth, targetDepth = 1, relationship, edges, res = null, last = true) {
+  if (depth >= targetDepth) {
+    if (last && res) res.json(edges);
+    return;
+  }
+  connection.query('SELECT RelatedCourseID from CoursesRelationships WHERE CourseID_cr = ? AND Relationship = ?', [courseId, relationship], (err, data) => {
+    if (err) throw err;
+    data.forEach(({ RelatedCourseID }, i) => {
+      edges.push(relationship ? {
+        from:
+          RelatedCourseID,
+        to:
+          courseId,
+      } : {
+        from:
+            courseId,
+        to:
+            RelatedCourseID,
+      });
+      dfsHelp(RelatedCourseID, depth + 1, targetDepth, relationship, edges, res, last && (i === data.length - 1));
+    });
+    if (last && data.length === 0 && res) {
+      res.json(edges);
+    }
+  });
+}
+
+app.get('/relational/:courseId', (req, res) => {
+  const { courseId } = req.params;
+  const { depth } = req.query;
+  if (depth > 2) res.sendStatus(403);
+  const edges = [];
+  dfsHelp(courseId, 0, depth, 0, edges);
+  dfsHelp(courseId, 0, depth, 1, edges, res);
 });
 
 app.get('/*', (req, res) => {
