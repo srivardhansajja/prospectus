@@ -146,11 +146,11 @@ const Explore = () => {
                 courseid={selectedCourse}
                 coursesetter={setSelectedCourse}
               />
-              <Wishlist />
+              <Wishlist page="explore" />
             </Row>
             <Row className="mt-5">
               <CourseDescription courseid={selectedCourse} />
-              <RelevantCourses />
+              <RelevantCourses page="explore" />
             </Row>
           </Col>
         </Row>

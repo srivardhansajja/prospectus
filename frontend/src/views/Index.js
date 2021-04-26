@@ -23,6 +23,10 @@ import Chart from 'chart.js';
 // react plugin used to create charts
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
+import Wishlist from 'components/Wishlist';
+// wishlist
+import RelevantCourses from 'components/RelevantCourses.jsx';
+// relevant course
 import {
   Card,
   CardHeader,
@@ -91,88 +95,12 @@ const Dashboard = (props) => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col xl="4">
-                <Card className="shadow">
-                  <CardHeader className="bg-transparent">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        {/* <h6 className="text-uppercase text-muted ls-1 mb-1">
-                          Performance
-                        </h6> */}
-                        <h2 className="mb-0">Courses Wishlist</h2>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <CardBody>
-                    {/* Chart */}
-                    <div className="chart">
-                      <Bar
-                        data={chartExample2.data}
-                        options={chartExample2.options}
-                      />
-                    </div>
-                  </CardBody>
-                </Card>
-              </Col>
+              <Wishlist page="dashboard"/>;
             </Row>
 
             <Row className="mt-5">
-              <Col className="mb-5 mb-xl-0" xl="8">
-                <Card className="shadow">
-                  <CardHeader className="border-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h3 className="mb-0">Recommended Courses</h3>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <Table
-                    style={{ height: 20 }}
-                    className="align-items-center table-flush"
-                    responsive
-                  >
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Course ID</th>
-                        <th scope="col">Course Name</th>
-                        <th scope="col">Credit Hours</th>
-                        <th scope="col">Average GPA</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">CS 498</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">ME 180</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">CS 242</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">ECE 374</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">ECE 445</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card>
+              <Col>
+                <RelevantCourses page="dashboard"/>
               </Col>
               <Col xl="4">
                 <Card className="shadow">

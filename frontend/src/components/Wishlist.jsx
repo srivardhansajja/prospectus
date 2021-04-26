@@ -20,11 +20,11 @@ import {
   Input,
 } from 'reactstrap';
 
-const Wishlist = () => {
+const Wishlist = (props) => {
   const username = 'ajackson1';
   var data;
   var searchBarText = '';
-
+  
   const [wishlistList, setWishlistList] = useState([]);
   const [isLoaded, setIsLoaded] = useState(0);
   const [isAuthorized, setIsAuthorized] = useContext(Authorization);
@@ -65,15 +65,27 @@ const Wishlist = () => {
     getWishlist();
     setIsLoaded(1);
   }
-
-  var listsElements = wishlistList.map((course) => (
-    <WishlistItem
-      key={course}
-      courseid={course[0]}
-      description={course[1]}
-      onChange={getWishlist}
-    ></WishlistItem>
-  ));
+  if (props.page == "dashboard") {
+    var listsElements = wishlistList.map((course) => (
+      <WishlistItem
+        page="dashboard"
+        key={course}
+        courseid={course[0]}
+        description={course[1]}
+        onChange={getWishlist}
+      ></WishlistItem>
+    ));
+  } else if (props.page == "explore") {
+    var listsElements = wishlistList.map((course) => (
+      <WishlistItem
+        page="explore"
+        key={course}
+        courseid={course[0]}
+        description={course[1]}
+        onChange={getWishlist}
+      ></WishlistItem>
+    ));
+  }
 
   return (
     <Col xl="4">
@@ -90,25 +102,26 @@ const Wishlist = () => {
             </div>
           </Row>
           <Row className="pl-0 align-items-center">
-            <Form className="ml-2 mt-2 mb--1 navbar-search">
-              <FormGroup className="mb-0">
-                <InputGroup
-                  className="input-group-alternative"
-                  style={{ width: 400 }}
-                >
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="fas fa-search" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Search"
-                    onChange={(e) => setSearchBarText(e.target.value)}
-                    type="text"
-                  />
-                </InputGroup>
-              </FormGroup>
-            </Form>
+            <div className="col">
+              <Form className="mt-2 mb--1 navbar-search">
+                <FormGroup className="mb-0">
+                  <InputGroup
+                    className="input-group-alternative"
+                  >
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fas fa-search" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="Search"
+                      onChange={(e) => setSearchBarText(e.target.value)}
+                      type="text"
+                    />
+                  </InputGroup>
+                </FormGroup>
+              </Form>
+            </div>
           </Row>
         </CardHeader>
         <CardBody
