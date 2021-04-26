@@ -58,20 +58,22 @@ const Dependencies = (props) => {
   useEffect(() => {
     const getGraph = async (courseId) => {
       const resp = await Axios.get(`/relational/${courseId}`, {
-        params: { depth: 1 },
+        params: { depth: 2 },
       });
+      const { edges, seen } = resp.data;
       const nodesArr = [courseId].concat(
-        resp.data.map(({ to, from }) => [to, from]).flat()
+        edges.map(({ to, from }) => [to, from]).flat()
       );
       const nodes = [...new Set(nodesArr)].map((e) => ({
         id: e,
         label: `<b>${e}</b>`,
-        color: '#555',
+        color: seen[0][e] ? '#2a9d8f' : e === courseId ? '#f4a261' : '#e9c46a',
       }));
+      // out edges, main node, in edges
       const result = {
         graph: {
           nodes,
-          edges: [...resp.data],
+          edges,
         },
       };
       console.log(result);
@@ -115,10 +117,10 @@ const Dependencies = (props) => {
                 getNetwork={(network) => setNetwork(network)}
               />
             ) : (
-              <>
-                <i>(Select a course to view dependencies and prerequisites)</i>
-              </>
-            )}
+                <>
+                  <i>(Select a course to view dependencies and prerequisites)</i>
+                </>
+              )}
           </CardBody>
         </Card>
       </Col>

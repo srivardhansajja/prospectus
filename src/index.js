@@ -231,14 +231,15 @@ app.post('/user/coursesTaken', authUser, (req, res) => {
 
 // DFS traveral where far left last node controls when we send the whole edge graph
 // Kinda a mess with callbacks & recursion lol
-function dfsHelp(courseId, depth, targetDepth = 1, relationship, edges, res = null, last = true) {
+function dfsHelp(courseId, depth, targetDepth = 1, relationship, edges, seen, res = null, last = true) {
   if (depth >= targetDepth) {
-    if (last && res) res.json(edges);
+    if (last && res) res.json({ edges, seen });
     return;
   }
   connection.query('SELECT RelatedCourseID from CoursesRelationships WHERE CourseID_cr = ? AND Relationship = ?', [courseId, relationship], (err, data) => {
     if (err) throw err;
     data.forEach(({ RelatedCourseID }, i) => {
+      seen[relationship][RelatedCourseID] = true;
       edges.push(relationship ? {
         from:
           RelatedCourseID,
@@ -250,10 +251,10 @@ function dfsHelp(courseId, depth, targetDepth = 1, relationship, edges, res = nu
         to:
             RelatedCourseID,
       });
-      dfsHelp(RelatedCourseID, depth + 1, targetDepth, relationship, edges, res, last && (i === data.length - 1));
+      dfsHelp(RelatedCourseID, depth + 1, targetDepth, relationship, edges, seen, res, last && (i === data.length - 1));
     });
     if (last && data.length === 0 && res) {
-      res.json(edges);
+      res.json({ edges, seen });
     }
   });
 }
@@ -263,8 +264,9 @@ app.get('/relational/:courseId', (req, res) => {
   const { depth } = req.query;
   if (depth > 2) res.sendStatus(403);
   const edges = [];
-  dfsHelp(courseId, 0, depth, 0, edges);
-  dfsHelp(courseId, 0, depth, 1, edges, res);
+  const seen = {0: {}, 1: {}};
+  dfsHelp(courseId, 0, depth, 0, edges, seen);
+  dfsHelp(courseId, 0, depth, 1, edges, seen, res);
 });
 
 app.get('/*', (req, res) => {
