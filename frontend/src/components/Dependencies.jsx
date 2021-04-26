@@ -58,7 +58,7 @@ const Dependencies = (props) => {
   useEffect(() => {
     const getGraph = async (courseId) => {
       const resp = await Axios.get(`/relational/${courseId}`, {
-        params: { depth: 2 },
+        params: { depth: 1 },
       });
       const { edges, seen } = resp.data;
       const nodesArr = [courseId].concat(
