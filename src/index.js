@@ -65,22 +65,12 @@ app.post('/login', async (req, res) => {
 
 // route for returning search results
 app.get('/search', (req, res) => {
-  const sql = queries.Search;
-  const { dept, keywords, userid } = req.query;
-
-  connection.query(
-    sql,
-    [keywords, dept, keywords, dept, userid],
-    (err, data) => {
-      if (err) throw err;
-      res.json({
-        status: 200,
-        length: Object.keys(data).length,
-        data,
-        message: 'Search results returned successfully',
-      });
-    }
-  );
+  const sql = queries.Searchv2;
+  const { q } = req.query;
+  connection.query(sql, [q, q, q], (err, data) => {
+    if (err) throw err;
+    res.json(data);
+  });
 });
 
 app.get('/user/profile', authUser, (req, res) => {
