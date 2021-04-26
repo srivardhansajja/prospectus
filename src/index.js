@@ -30,9 +30,9 @@ function authUser(req, res, next) {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, data) => {
-    if (err || !data?.id) return res.sendStatus(403);
+    if (err || !data.id) return res.sendStatus(403);
 
-    req.user = data?.id;
+    req.user = data.id;
 
     next();
   });
@@ -82,7 +82,18 @@ app.get('/search', (req, res) => {
   );
 });
 
+app.get('/unisearch', (req, res) => {
+  const {UniversityID} = req.query;
+  const sqlSearch = "SELECT * FROM University WHERE UniversityID = ?";
+  connection.query(sqlSearch,[UniversityID], (error, result) => {
+    if (error) throw error;
+      res.json(result);
+  });
+});
+
 app.get('/user/profile', authUser, (req, res) => {
+
+  console.log("hi");
   connection.query('SELECT * From Users WHERE UserId = ?', [req.user], (err, data) => {
     if (err) throw err;
 
@@ -127,6 +138,53 @@ app.post('/user/wishlist', authUser, (req, res) => {
       });
     }
   });
+});
+
+app.put("/updateUser", (req, res) => {
+  const Email = req.body.Email;
+  const Major = req.body.Major;
+  const Name = req.body.Name;
+  const Picture = req.body.Picture;
+  const YearEnrolled = req.body.YearEnrolled;
+  const UserId = req.body.UserId;
+
+  // console.log(Email)
+  // console.log(Major)
+  // console.log(Name)
+  // console.log(Picture)
+  // console.log(YearEnrolled)
+  // console.log(UserId)
+
+
+  const sqlUpdate = "UPDATE `Users` SET `Email` = ?,`Major` = ?, `Name` = ?, `Picture` = ?, `YearEnrolled` = ? WHERE `UserId` = ?;";
+  
+  connection.query(sqlUpdate, [Email, Major,Name,Picture,YearEnrolled,UserId], (error, result) => {
+      if (error) 
+      console.log(error);
+  })
+});
+
+app.put("/updateUniversity", (req, res) => {
+  const UniCity = req.body.UniCity;
+  const PrimeColor = req.body.PrimeColor;
+  const SecondColor = req.body.SecondColor;
+  const EmailDomain = req.body.EmailDomain;
+  const UniversityID = req.body.UniversityID;
+  const UniName = req.body.UniName
+
+  console.log(UniCity)
+  console.log(PrimeColor)
+  console.log(SecondColor)
+  console.log(EmailDomain)
+  console.log(UniversityID)
+  console.log(UniName)
+
+  const sqlUpdate = "UPDATE `University` SET `City` = ?,`PrimaryColor` = ?, `SecondaryColor` = ?, `UniversityName` = ?, `emailDomain` = ? WHERE `UniversityID` = ?;";
+  
+  connection.query(sqlUpdate, [UniCity, PrimeColor,SecondColor,UniName,EmailDomain,UniversityID], (error, result) => {
+      if (error) 
+      console.log(error);
+  })
 });
 
 // route for updating entry in a user's wishlist

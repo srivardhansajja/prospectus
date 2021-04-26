@@ -15,7 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, {useEffect, useState } from 'react';
+import Axios from 'axios';
 
 // reactstrap components
 import {
@@ -32,7 +33,117 @@ import {
 } from "reactstrap";
 // core components
 
+
 const Profile = () => {
+  
+  const [UserData, setUserData] = useState('');
+  const [UniData, setUniData] = useState('');
+  // const [UniversityID, setUniversityID] = useState('');
+
+  
+  // const [Username, setUsername] = useState('');
+  // const [Email, setEmail] = useState('');
+  // const [Firstname, setFirstname] = useState('');
+  // const [Lastname, setLastname] = useState('');
+  // const [Major, setMajor] = useState('');
+  // const [Picture, setPicture] = useState('');
+  // const [Enrolled, setEnrolled] = useState('');
+  
+  
+
+  let input_disable = document.getElementById("input_disable");
+
+  useEffect(() => {
+    getUserProfile();
+  }, []);
+
+  useEffect(() => {
+    unisearch();
+  }, [UserData]);
+  // const getUserProfile = async () => {
+  //   const resp = await axios.get('/user/profile', { withCredentials: true });
+  //   const [info] = resp.data
+  //   setUserData(info);
+  // };
+  
+  const getUserProfile = () => {
+      Axios.get('/user/profile', {
+      withCredentials: true,
+    }).then(
+      (response) => {
+        setUserData(response.data[0]);
+        
+        console.log(response.data[0]);
+        // console.log(UserData[0].Name);
+      }
+    );
+  }
+
+  const disableSetting = () => {
+    input_disable.disabled = !input_disable.disabled;
+  }
+
+  const unisearch = () => {
+    Axios.get('/unisearch', {
+      params: {UniversityID: UserData ? UserData.UniversityID_u : 0},
+    }).then((response) => {
+      setUniData(response.data[0]);
+      console.log(response.data[0]);
+    });
+  };
+
+  const updateUser = () => {
+    
+    // setUsername(document.getElementById("input-username").value)
+    // setEmail(document.getElementById("input-email").value)
+    // setFirstname(document.getElementById("input-first-name").value)
+    // setLastname(document.getElementById("input-last-name").value)
+    // setMajor(document.getElementById("input-Major").value)
+    // setPicture(document.getElementById("input-Picture").value)
+    // setEnrolled(document.getElementById("input-Enrolled").value)
+
+    if(!input_disable.disabled)
+    {
+    let Username = document.getElementById("input-username").value
+    let Email = document.getElementById("input-email").value
+    let Firstname = document.getElementById("input-first-name").value
+    let Lastname = document.getElementById("input-last-name").value
+    let Major = document.getElementById("input-Major").value
+    let Picture = document.getElementById("input-Picture").value
+    let Enrolled = document.getElementById("input-Enrolled").value
+
+    let UniCity = document.getElementById("input-UniCity").value
+    let PrimeColor = document.getElementById("input-PrimeColor").value
+    let SecondColor = document.getElementById("input-SecondColor").value
+    let EmailDomain = document.getElementById("input-EmailDomain").value
+    let UniversityName = document.getElementById("input-UniversityName").value
+
+      
+
+    
+    Axios.put('/updateUser', {
+      Email: Email ? Email : null,
+      Major: Major ? Major : null,
+      Name: Firstname + ' ' + Lastname,
+      Picture: Picture ? Picture : null,
+      UserId: Username ? Username : null,
+      YearEnrolled: Enrolled ? Enrolled : null
+    });
+
+    Axios.put('/updateUniversity',{
+      UniCity:UniCity ? UniCity : null,
+      PrimeColor:PrimeColor ? PrimeColor: null,
+      SecondColor:SecondColor ? SecondColor : null,
+      EmailDomain:EmailDomain ? EmailDomain : null,
+      UniName: UniversityName ? UniversityName : null,
+      UniversityID: UniData.UniversityID ? UniData.UniversityID : null
+    });
+
+    }
+    getUserProfile();
+    input_disable.disabled = true;
+  };
+
   return (
     <>
       <div
@@ -52,7 +163,7 @@ const Profile = () => {
         <Container className="d-flex align-items-center" fluid>
           <Row>
             <Col lg="7" md="10">
-              <h1 className="display-2 text-white">Hello Jesse</h1>
+              <h1 className="display-2 text-white">{UserData ? UserData.Name : ""}</h1>
               <p className="text-white mt-0 mb-5">
                 This is your profile page. You can see the progress you've made
                 with your work and manage your projects or assigned tasks
@@ -60,7 +171,7 @@ const Profile = () => {
               <Button
                 color="info"
                 href="#pablo"
-                onClick={(e) => e.preventDefault()}
+                onClick={disableSetting}
               >
                 Edit profile
               </Button>
@@ -78,18 +189,16 @@ const Profile = () => {
                   <div className="card-profile-image">
                     <a href="#pablo" onClick={(e) => e.preventDefault()}>
                       <img
-                        alt="..."
+                        alt = "Unable to load. Place a new picture URL in My Account"
                         className="rounded-circle"
-                        src={
-                          require("../assets/img/theme/team-4-800x800.jpg")
-                            .default
-                        }
+                        // src={UserData ? UserData.Picture : ""}
+                        src = "https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
                       />
                     </a>
                   </div>
                 </Col>
               </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+              {/* <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                 <div className="d-flex justify-content-between">
                   <Button
                     className="mr-4"
@@ -110,52 +219,58 @@ const Profile = () => {
                     Message
                   </Button>
                 </div>
-              </CardHeader>
+              </CardHeader> */}
               <CardBody className="pt-0 pt-md-4">
                 <Row>
                   <div className="col">
                     <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                       <div>
-                        <span className="heading">22</span>
-                        <span className="description">Friends</span>
+                        {/* <span className="heading">22</span>
+                        <span className="description">Friends</span> */}
                       </div>
                       <div>
-                        <span className="heading">10</span>
-                        <span className="description">Photos</span>
+                        {/* <span className="heading">10</span>
+                        <span className="description">Photos</span> */}
                       </div>
                       <div>
-                        <span className="heading">89</span>
-                        <span className="description">Comments</span>
+                        {/* <span className="heading">89</span>
+                        <span className="description">Comments</span> */}
                       </div>
                     </div>
                   </div>
                 </Row>
                 <div className="text-center">
                   <h3>
-                    Jessica Jones
-                    <span className="font-weight-light">, 27</span>
+                    {UserData ? UserData.Name : ""}
+                    <br></br>
                   </h3>
                   <div className="h5 font-weight-300">
                     <i className="ni location_pin mr-2" />
-                    Bucharest, Romania
+                    Class of {UserData.YearEnrolled ? UserData.YearEnrolled : "'Update Your Year Enrolled'"}
+                    <br></br>
+                    Major: {UserData.Major ? UserData.Major : "'Update Your Major'"}
                   </div>
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
-                    Solution Manager - Creative Tim Officer
+                    Student at
                   </div>
                   <div>
                     <i className="ni education_hat mr-2" />
-                    University of Computer Science
+                    {UniData ? UniData.UniversityName : "'Update Your University Name'"}
+                    <br></br>
+                    City: {UniData ? UniData.City : "'Update Your University City'"}
+                    <br></br>
+                    Primary Color: {UniData ? UniData.PrimaryColor : "'Update Your University's Primary Color'"}
                   </div>
-                  <hr className="my-4" />
-                  <p>
+                  {/* <hr className="my-4" /> */}
+                  {/* <p>
                     Ryan — the name taken by Melbourne-raised, Brooklyn-based
                     Nick Murphy — writes, performs and records all of his own
                     music.
                   </p>
                   <a href="#pablo" onClick={(e) => e.preventDefault()}>
                     Show more
-                  </a>
+                  </a> */}
                 </div>
               </CardBody>
             </Card>
@@ -171,16 +286,17 @@ const Profile = () => {
                     <Button
                       color="primary"
                       href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                      onClick={updateUser}
                       size="sm"
                     >
-                      Settings
+                      Submit Changes
                     </Button>
                   </Col>
                 </Row>
               </CardHeader>
               <CardBody>
                 <Form>
+                  <fieldset id = "input_disable" disabled="disabled">
                   <h6 className="heading-small text-muted mb-4">
                     User information
                   </h6>
@@ -192,12 +308,13 @@ const Profile = () => {
                             className="form-control-label"
                             htmlFor="input-username"
                           >
-                            Username
+                            UserID
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="lucky.jesse"
+                            defaultValue={UserData.UserId ? UserData.UserId : ""}
                             id="input-username"
+                            disabled = "disabled"
                             placeholder="Username"
                             type="text"
                           />
@@ -213,6 +330,8 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
+                            defaultValue = {UserData.Email ? UserData.Email : ""}
+                            // disabled = "disabled"
                             id="input-email"
                             placeholder="jesse@example.com"
                             type="email"
@@ -231,7 +350,8 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Lucky"
+                            defaultValue={UserData.Name ? (UserData.Name).substr(0,(UserData.Name).indexOf(' ')) : ""}
+                            // disabled = "disabled"
                             id="input-first-name"
                             placeholder="First name"
                             type="text"
@@ -248,7 +368,8 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Jesse"
+                            defaultValue={UserData.Name ? (UserData.Name).substr((UserData.Name).indexOf(' ')+1) : ""}
+                            // disabled = "disabled"
                             id="input-last-name"
                             placeholder="Last name"
                             type="text"
@@ -258,66 +379,71 @@ const Profile = () => {
                     </Row>
                   </div>
                   <hr className="my-4" />
-                  {/* Address */}
+
                   <h6 className="heading-small text-muted mb-4">
-                    Contact information
+                    Profile Information
                   </h6>
                   <div className="pl-lg-4">
-                    <Row>
+
+                  <Row>
                       <Col md="12">
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-address"
+                            htmlFor="input-Picture"
                           >
-                            Address
+                            Profile Picture Link
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                            id="input-address"
-                            placeholder="Home Address"
+                            defaultValue= {UserData.Picture ? UserData.Picture : ""}
+                            // disabled = "disabled"
+                            id="input-Picture"
+                            placeholder="URL Link for Profile Picture"
                             type="text"
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
+                      </Row>
                     <Row>
                       <Col lg="4">
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-city"
+                            htmlFor="input-Major"
                           >
-                            City
+                            Major
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="New York"
-                            id="input-city"
-                            placeholder="City"
+                            defaultValue= {UserData.Major ? UserData.Major : ""}
+                            // disabled = "disabled"
+                            id="input-Major"
+                            placeholder="Enter Your Major"
                             type="text"
                           />
                         </FormGroup>
                       </Col>
+                    
                       <Col lg="4">
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-country"
+                            htmlFor="input-Enrolled"
                           >
-                            Country
+                            Year Enrolled
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="United States"
-                            id="input-country"
-                            placeholder="Country"
+                            defaultValue= {UserData.YearEnrolled ? UserData.YearEnrolled : ""}
+                            // disabled = "disabled"
+                            id="input-Enrolled"
+                            placeholder="Put The Year You Enrolled"
                             type="text"
                           />
                         </FormGroup>
                       </Col>
-                      <Col lg="4">
+                      {/* <Col lg="4">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -332,12 +458,114 @@ const Profile = () => {
                             type="number"
                           />
                         </FormGroup>
+                      </Col> */}
+                    </Row>
+                  </div>
+                  <hr className="my-4" />
+
+                  <h6 className="heading-small text-muted mb-4">
+                    University Information
+                  </h6>
+                  <div className="pl-lg-4">
+                    <Row>
+
+                    <Col md="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-UniCity"
+                          >
+                            University City
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue= {UniData? UniData.City : ""}
+                            // disabled = "disabled"
+                            id="input-UniCity"
+                            placeholder="Univesity's City"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      <Col md="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-UniversityName"
+                          >
+                            University Name
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue= {UniData? UniData.UniversityName : ""}
+                            // disabled = "disabled"
+                            id="input-UniversityName"
+                            placeholder="Put Your University Name"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-PrimeColor"
+                          >
+                            Primary Color
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue= {UniData? UniData.PrimaryColor : ""}
+                            // disabled = "disabled"
+                            id="input-PrimeColor"
+                            placeholder="Put Your University's Primary Color"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-SecondColor"
+                          >
+                            Secondary Color
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue= {UniData? UniData.SecondaryColor : ""}
+                            // disabled = "disabled"
+                            id="input-SecondColor"
+                            placeholder="Put Your University's Secondary Color"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-EmailDomain"
+                          >
+                            Email Domain
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue= {UserData? UserData.emailDomain : ""}
+                            // disabled = "disabled"
+                            id="input-EmailDomain"
+                            placeholder="ex: illinois.edu"
+                            type="text"
+                          />
+                        </FormGroup>
                       </Col>
                     </Row>
                   </div>
                   <hr className="my-4" />
                   {/* Description */}
-                  <h6 className="heading-small text-muted mb-4">About me</h6>
+                  {/* <h6 className="heading-small text-muted mb-4">About me</h6>
                   <div className="pl-lg-4">
                     <FormGroup>
                       <label>About Me</label>
@@ -350,7 +578,8 @@ const Profile = () => {
                         type="textarea"
                       />
                     </FormGroup>
-                  </div>
+                  </div> */}
+                </fieldset>
                 </Form>
               </CardBody>
             </Card>
