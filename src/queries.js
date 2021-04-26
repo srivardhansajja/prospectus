@@ -39,6 +39,22 @@ const Search = `
     LIMIT 10
   )
 `;
+const Searchv2 = `
+(SELECT * FROM Prospectus.Courses 
+WHERE LOWER(CourseID) LIKE REPLACE(CONCAT(?, '%'), ' ', '')
+LIMIT 10)
+UNION (
+  SELECT * FROM Prospectus.Courses 
+  WHERE CourseName LIKE CONCAT('%', ?, '%') 
+  LIMIT 10
+) UNION (
+  SELECT * FROM Prospectus.Courses 
+  WHERE Description LIKE CONCAT('%', ?, '%') 
+  LIMIT 10
+)
+LIMIT 10
+`;
+
 
 const wishlistQuery = `
   SELECT CourseID_wish, Description 
@@ -121,4 +137,5 @@ module.exports = {
   relevantCoursesQuery,
   courseDescQuery,
   coursesTakenInsert,
+  Searchv2,
 };

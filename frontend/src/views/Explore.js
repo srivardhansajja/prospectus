@@ -15,12 +15,10 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Axios from 'axios';
 
 import { useHistory } from 'react-router-dom';
-
-import departments from '../variables/depts.json';
 
 import {
   Card,
@@ -52,89 +50,21 @@ const Explore = () => {
 
   if (!isAuthorized) history.push('/auth/login');
 
-  const username = 'ajackson1';
-  var keywords = '';
-  var dept = '';
-  var listsElements;
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [resultsList, setResultsList] = useState([]);
-  const [searchString, setSearchString] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
-  function generateAPIQuery(queryString) {
-    setSearchString(queryString);
-    const words = queryString.split(' ');
-    for (var i = 0; i < words.length; i++) {
-      if (departments.depts.includes(words[i])) {
-        dept = words[i] + '%';
-        delete words[i];
-        break;
-      }
-    }
-    keywords = words.join('%');
-  }
-
-  const getSearchResults = (queryString) => {
-    generateAPIQuery(queryString.toLowerCase());
-
-    Axios.get('/search', {
-      params: { userid: username, keywords: keywords, dept: dept },
-    }).then(
-      (response) => {
-        var results = response.data.data.map(function (item) {
-          return [
-            item['CourseID'],
-            item['UniversityID_c'],
-            item['Description'],
-            item['CreditHours'],
-            item['AverageGPA'],
-            item['CourseDepartment'],
-            item['CourseName'],
-            item['num_students'],
-          ];
-        });
-        setResultsList(results);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-
-  var wishlist = <Wishlist page="explore"/>;
-  var dependencies = <Dependencies courseid={selectedCourse} />;
-
-  if (searchString.length > 0) {
-    listsElements = resultsList.map((course) => (
-      <SearchResult
-        key={course[0]}
-        courseid={course[0]}
-        coursename={course[6]}
-        description={course[2]}
-        setCourse={setSelectedCourse}
-      />
-    ));
-  } else {
-    listsElements = (
-      <div
-        style={{
-          borderWidth: 2,
-          borderStyle: 'solid',
-          borderColor: 'white',
-          borderRadius: 20,
-          textAlign: 'center',
-          color: 'white',
-          padding: 10,
-          marginTop: 15,
-          marginLeft: 30,
-          marginRight: 30,
-        }}
-      >
-        Search for courses based on name, department, description, subtopics or
-        general education category
-      </div>
-    );
-  }
+  useEffect(() => {
+    const getSearchResults = async (q) => {
+      if (!q) return;
+      const resp = await Axios.get('/search', {
+        params: { q: q.toLowerCase() },
+      });
+      console.log(resp.data);
+      setResultsList(resp.data);
+    };
+    getSearchResults(searchTerm);
+  }, [searchTerm]);
 
   return (
     <>
@@ -162,7 +92,7 @@ const Explore = () => {
                           </InputGroupAddon>
                           <Input
                             placeholder="Search"
-                            onChange={(e) => getSearchResults(e.target.value)}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             type="text"
                           />
                         </InputGroup>
@@ -177,19 +107,50 @@ const Explore = () => {
                   overflowY: 'auto',
                 }}
               >
-                {listsElements}
+                {searchTerm.length ? (
+                  resultsList.map(({ CourseID, CourseName, Description }) => (
+                    <SearchResult
+                      key={CourseID}
+                      courseid={CourseID}
+                      coursename={CourseName}
+                      description={Description}
+                      setCourse={setSelectedCourse}
+                    />
+                  ))
+                ) : (
+                  <div
+                    style={{
+                      borderWidth: 2,
+                      borderStyle: 'solid',
+                      borderColor: 'white',
+                      borderRadius: 20,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: 10,
+                      marginTop: 15,
+                      marginLeft: 30,
+                      marginRight: 30,
+                    }}
+                  >
+                    Search for courses based on name, department, description,
+                    subtopics or general education category
+                  </div>
+                )}
               </CardBody>
             </Card>
           </Col>
 
           <Col>
             <Row style={{ padding: -10, marginBottom: -20 }}>
-              {dependencies}
-              {wishlist}
+              <Dependencies
+                courseid={selectedCourse}
+                coursesetter={setSelectedCourse}
+              />
+              <Wishlist page="explore" />
             </Row>
             <Row className="mt-5">
               <CourseDescription courseid={selectedCourse} />
-              <RelevantCourses page="explore"/>
+              <RelevantCourses page="explore" />
             </Row>
           </Col>
         </Row>
