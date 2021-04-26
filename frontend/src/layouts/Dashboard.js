@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocation, Route, Switch, Redirect } from 'react-router-dom';
 // reactstrap components
 import { Container } from 'reactstrap';
@@ -25,9 +25,13 @@ import Footer from 'components/Footer.jsx';
 
 import routes from 'routes.js';
 
+import { Authorization } from '../index.js';
+
 const Dashboard = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
+
+  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
 
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -62,7 +66,7 @@ const Dashboard = (props) => {
         </Switch>
         <Container fluid>
           <footer className="footer">
-            <hr />
+            <hr style={{ marginTop: -20 }} />
             <Footer />
           </footer>
         </Container>

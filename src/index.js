@@ -215,11 +215,11 @@ app.get('/user/coursedescription', (req, res) => {
   });
 });
 
-// route for adding entry to a user's wishlist
+// route for adding entry to a user's taken courses list
 app.post('/user/coursesTaken', authUser, (req, res) => {
   const sql = queries.coursesTakenInsert;
   const { courseid } = req.body;
-
+  console.log(courseid);
   // we probably need to validate the university ID here? for searching
   connection.query(sql, [req.user, courseid], (err, data) => {
     if (err) {

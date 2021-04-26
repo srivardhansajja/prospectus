@@ -15,8 +15,10 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Axios from 'axios';
+
+import { useHistory } from 'react-router-dom';
 
 import departments from '../variables/depts.json';
 
@@ -42,8 +44,14 @@ import Wishlist from 'components/Wishlist';
 import RelevantCourses from 'components/RelevantCourses.jsx';
 import Dependencies from 'components/Dependencies.jsx';
 import CourseDescription from 'components/CourseDescription.jsx';
+import { Authorization } from '../index.js';
 
 const Explore = () => {
+  const history = useHistory();
+  const isAuthorized = useContext(Authorization)[0];
+
+  if (!isAuthorized) history.push('/auth/login');
+
   const username = 'ajackson1';
   var keywords = '';
   var dept = '';
@@ -64,8 +72,6 @@ const Explore = () => {
       }
     }
     keywords = words.join('%');
-    console.log(keywords);
-    console.log(dept);
   }
 
   const getSearchResults = (queryString) => {
@@ -140,7 +146,7 @@ const Explore = () => {
             xl="3"
           >
             <Card
-              style={{ height: '875px' }}
+              style={{ height: '840px' }}
               className="bg-gradient-default shadow"
             >
               <CardHeader className="bg-transparent">

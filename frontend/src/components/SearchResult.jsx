@@ -11,8 +11,6 @@ const SearchResult = (props) => {
   const username = 'ajackson1';
 
   const AddCourseToWishlist = (courseid) => {
-    console.log(courseid);
-    console.log(username);
     Axios.post(
       '/user/wishlist',
       {
@@ -26,8 +24,6 @@ const SearchResult = (props) => {
           window.alert(
             `This course with courseid "${courseid}" is already in your wishlist`
           );
-        } else {
-          console.log(response.data);
         }
       },
       (error) => {

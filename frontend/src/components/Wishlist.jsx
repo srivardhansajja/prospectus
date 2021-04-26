@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Axios from 'axios';
 import WishlistItem from './WishlistItem.jsx';
+
+import { Authorization } from '../index.js';
 
 import {
   Card,
@@ -25,6 +27,7 @@ const Wishlist = () => {
 
   const [wishlistList, setWishlistList] = useState([]);
   const [isLoaded, setIsLoaded] = useState(0);
+  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
 
   const setSearchBarText = (text) => {
     searchBarText = text;
@@ -33,26 +36,29 @@ const Wishlist = () => {
 
   const getWishlist = () => {
     var keywords_ = searchBarText.replace(' ', '%');
-    Axios.get('/user/wishlist', {
-      withCredentials: true,
-      params: { userid: username, keywords: keywords_ },
-    }).then(
-      (response) => {
-        console.log(response.data.data);
-        data = JSON.parse(JSON.stringify(response.data));
-        console.log(data);
+    if (isAuthorized) {
+      Axios.get('/user/wishlist', {
+        withCredentials: true,
+        params: { userid: username, keywords: keywords_ },
+      }).then(
+        (response) => {
+          console.log(response.data.data);
+          data = JSON.parse(JSON.stringify(response.data));
+          console.log(data);
 
-        var names = response.data.data.map(function (item) {
-          return [item['CourseID_wish'], item['Description']];
-        });
+          var names = response.data.data.map(function (item) {
+            return [item['CourseID_wish'], item['Description']];
+          });
 
-        setWishlistList(names);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    return data;
+          setWishlistList(names);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      return data;
+    }
+    return [];
   };
 
   if (isLoaded === 0) {

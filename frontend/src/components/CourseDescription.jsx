@@ -7,7 +7,6 @@ const CourseDescription = (props) => {
   const [description, setDescription] = useState(null);
 
   useEffect(() => {
-    console.log(props.courseid);
     getDescription();
   }, [props.courseid]);
 
@@ -25,7 +24,6 @@ const CourseDescription = (props) => {
             `This course with courseid "${courseid}" is already in your wishlist`
           );
         } else {
-          console.log(response.data);
         }
       },
       (error) => {
@@ -47,8 +45,6 @@ const CourseDescription = (props) => {
           window.alert(
             `This course with courseid "${courseid}" is already in your list of taken courses`
           );
-        } else {
-          console.log(response.data);
         }
       },
       (error) => {
@@ -90,8 +86,8 @@ const CourseDescription = (props) => {
   var desc;
   if (!description) {
     desc = (
-      <CardBody style={{ textAlign: 'center' }}>
-        <i>(Select a course to view dependencies and prerequisites)</i>
+      <CardBody style={{ textAlign: 'center', marginTop: 100 }}>
+        <i>(Select a course to view details)</i>
       </CardBody>
     );
   } else {
@@ -104,7 +100,7 @@ const CourseDescription = (props) => {
     desc = (
       <CardBody>
         <div className="row">
-          <div className="col">
+          <div className="col-8">
             <Badge
               style={{
                 marginTop: 'auto',
