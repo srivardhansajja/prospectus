@@ -88,61 +88,7 @@ const Dashboard = (props) => {
 
             <Row className="mt-3">
               <Col className="mb-5 mb-xl-0" xl="7">
-                <Card className="shadow">
-                  <CardHeader className="border-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h3 className="mb-0">Recommended Courses</h3>
-                      </div>
-                    </Row>
-                  </CardHeader>
-                  <Table
-                    style={{ height: 20 }}
-                    className="align-items-center table-flush"
-                    responsive
-                  >
-                    <thead className="thead-light">
-                      <tr>
-                        <th scope="col">Course ID</th>
-                        <th scope="col">Course Name</th>
-                        <th scope="col">Credit Hours</th>
-                        <th scope="col">Average GPA</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">CS 498</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">ME 180</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">CS 242</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">ECE 374</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">ECE 445</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card>
+                <RelevantCourses page="dashboard" />
               </Col>
               <Col className="mb-5 mb-xl-0">
                 <CoursesTaken />

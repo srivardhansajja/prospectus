@@ -41,8 +41,8 @@ const ProspectusNavbar = (props) => {
             backgroundColor: 'black',
             borderRadius: '10px',
           }}
-          to="/prospectus/explore"
-          tag={Link}
+          // to="/auth/login"
+          // tag={Link}
         >
           &nbsp; PROSPECTUS &nbsp;
         </NavbarBrand>

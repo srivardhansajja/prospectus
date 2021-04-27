@@ -209,8 +209,8 @@ const Profile = () => {
                 Hi {UserData ? UserData.Name : ''}!
               </h1>
               <p className="text-white mt-0 mb-5">
-                This is your profile page. You can update your information, and
-                add a picture to make it more personalized.
+                This is your Prospectus profile page. You can update your
+                information, and add a picture to make it more personalized.
               </p>
               <Button color="info" onClick={disableSetting}>
                 Edit profile
@@ -469,7 +469,7 @@ const Profile = () => {
                               id="input-Picture"
                               placeholder="URL Link for Profile Picture"
                               type="text"
-                              value = {Picture}
+                              value={Picture}
                               onChange={PictureHandler}
                             />
                           </FormGroup>
