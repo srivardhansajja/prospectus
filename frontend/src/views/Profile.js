@@ -469,7 +469,7 @@ const Profile = () => {
                               id="input-Picture"
                               placeholder="URL Link for Profile Picture"
                               type="text"
-                              // value = {Picture}
+                              value = {Picture}
                               onChange={PictureHandler}
                             />
                           </FormGroup>
