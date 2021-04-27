@@ -97,6 +97,20 @@ const coursesTakenDelete = `
   WHERE UserID_ct = ? AND CourseID_ct = ?
 `;
 
+const coursesPlannerQuery = `	
+SELECT cp.CourseID_cp, c.CourseName, c.CreditHours  	
+FROM CoursesPlanner cp JOIN Courses c ON cp.CourseID_cp = c.CourseID	
+WHERE cp.UserID_cp = ? AND cp.CourseSemester_cp = ?	
+`;
+const coursesPlannerInsert = `	
+INSERT INTO CoursesPlanner(UserID_cp, CourseID_cp, CourseSemester_cp)	
+VALUE (?, ?, ?)	
+`;
+const coursesPlannerDelete = `	
+DELETE FROM CoursesPlanner 	
+WHERE UserID_cp = ? AND CourseID_cp = ? AND CourseSemester_cp = ?	
+`;
+
 const relevantCoursesQuery = `
   CALL GetWishListRecs(?);
   SELECT * FROM Courses WHERE CourseID IN (SELECT * FROM tmpRecsTable);
@@ -113,6 +127,9 @@ module.exports = {
   wishlistInsert,
   wishlistUpdate,
   wishlistDelete,
+  coursesPlannerQuery,
+  coursesPlannerInsert,
+  coursesPlannerDelete,
   coursesTakenQuery,
   coursesTakenDelete,
   relevantCoursesQuery,

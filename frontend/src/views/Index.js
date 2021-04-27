@@ -23,9 +23,12 @@ import Chart from 'chart.js';
 // react plugin used to create charts
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
+import Wishlist from 'components/Wishlist';
+// wishlist
+import RelevantCourses from 'components/RelevantCourses.jsx';
+// relevant course
+import CoursesPlanner from 'components/CoursesPlanner.jsx';
 import CoursesTaken from 'components/CoursesTaken.jsx';
-
-import Wishlist from 'components/Wishlist.jsx';
 
 import {
   Card,
@@ -58,6 +61,7 @@ const Dashboard = (props) => {
 
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState('data1');
+  const [toggleRefresh, setToggleRefresh] = useState(false);
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
@@ -79,23 +83,28 @@ const Dashboard = (props) => {
                   <CardHeader className="bg-transparent">
                     <Row className="align-items-center">
                       <div className="col">
-                        <h2 className="text-white mb-0">Major Progress</h2>
+                        <h2 className="text-white mb-0">Course Planner</h2>
                       </div>
                     </Row>
                   </CardHeader>
-                  <CardBody>
-                    {/* Chart */}
-                    <div className="chart">
-                      <Line
-                        data={chartExample1[chartExample1Data]}
-                        options={chartExample1.options}
-                        getDatasetAtEvent={(e) => console.log(e)}
+                  <CardHeader className="bg-transparent">
+                    <Row>
+                      <CoursesPlanner
+                        semester="FA2021"
+                        refresh={{ refresh: [toggleRefresh, setToggleRefresh] }}
                       />
-                    </div>
-                  </CardBody>
+                      <CoursesPlanner
+                        semester="SP2021"
+                        refresh={{ refresh: [toggleRefresh, setToggleRefresh] }}
+                      />
+                    </Row>
+                  </CardHeader>
                 </Card>
               </Col>
-              <Wishlist page="dashboard" />;
+              <Wishlist
+                page="dashboard"
+                refresh={{ refresh: [toggleRefresh, setToggleRefresh] }}
+              />
             </Row>
 
             <Row className="mt-5">

@@ -309,6 +309,64 @@ app.post('/user/coursesTaken', authUser, (req, res) => {
   });
 });
 
+// route for querying all courses that a user has taken
+app.get('/user/coursesPlanner', authUser, (req, res) => {
+  const sql = queries.coursesPlannerQuery;
+  const { userid, semester } = req.query;
+
+  connection.query(sql, [req.user, semester], (err, data) => {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      length: Object.keys(data).length,
+      data,
+      message: 'Courses planner returned successfully',
+    });
+  });
+});
+
+// route for adding entry to a user's courses planner list
+app.post('/user/coursesPlanner', authUser, (req, res) => {
+  const sql = queries.coursesPlannerInsert;
+  const { courseid, semester } = req.body;
+
+  console.log(courseid);
+  // we probably need to validate the university ID here? for searching
+  connection.query(sql, [req.user, courseid, semester], (err, data) => {
+    if (err) {
+      res.json({
+        status: 400,
+        message: 'Duplicate',
+      });
+    } else {
+      res.json({
+        status: 200,
+        length: Object.keys(data).length,
+        data,
+        message: "Course added to user's taken courses planner successfully",
+      });
+    }
+  });
+});
+
+// route for deleting entry from a user's wishlist
+app.delete('/user/coursesPlanner', authUser, (req, res) => {
+  const sql = queries.coursesPlannerDelete;
+  const { courseid, semester } = req.query;
+
+  console.log(req.user);
+
+  connection.query(sql, [req.user, courseid, semester], (err, data) => {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      length: Object.keys(data).length,
+      data,
+      message: "Course deleted from user's courses planner successfully",
+    });
+  });
+});
+
 // DFS traveral where far left last node controls when we send the whole edge graph
 // Kinda a mess with callbacks & recursion lol
 function dfsHelp(

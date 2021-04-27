@@ -18,10 +18,12 @@ const WishlistItem = (props) => {
   const username = 'ajackson1';
 
   const [courseDesc, setCourseDesc] = useState('');
-  const [modal, setModal] = useState(false);
+  const [modalUpdate, setModalUpdate] = useState(false);
+  const [modalPlanner, setModalPlanner] = useState(false);
 
-  const toggle = () => setModal(!modal);
-
+  const toggleUpdate = () => setModalUpdate(!modalUpdate);
+  const togglePlanner = () => setModalPlanner(!modalPlanner);
+  
   const DeleteCourseFromWishlist = (courseid) => {
     console.log(username, courseid);
     Axios.delete('/user/wishlist', {
@@ -38,8 +40,33 @@ const WishlistItem = (props) => {
     );
   };
   
+  const AddCoursetoCoursesPlanner = (courseid, semester) => {
+    togglePlanner();
+    console.log(courseid, semester);
+    Axios.post(
+      '/user/coursesPlanner',
+      {
+        courseid: courseid,
+        semester: semester,
+      },
+      { withCredentials: true }
+    ).then(
+      (response) => {
+        if (response.data.status === 400) {
+          window.alert(
+            `This course with courseid "${courseid}" is already in your course planner`
+          );
+        }
+        props.setToggleRefresh.refresh[1](!props.setToggleRefresh.refresh[0]);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
   const UpdateCourseInWishlist = () => {
-    toggle();
+    toggleUpdate();
     console.log(username, props.courseid, courseDesc);
     Axios.post(
       '/user/wishlist/update',
@@ -66,10 +93,21 @@ const WishlistItem = (props) => {
   } else if (props.page == "explore") {
     truncateValue = 20
   }
-
+  if (props.page == "dashboard") {
+    var addButton = (<button
+            value={props.courseid}
+            type="button"
+            onClick={togglePlanner}
+            className="btn btn-sm btn-success"
+          >
+            + Planner
+          </button>)
+  } else {
+    var addButton = <></>
+  }
   return (
     <>
-      <Modal isOpen={modal} toggle={toggle}>
+      <Modal isOpen={modalUpdate} toggle={toggleUpdate}>
         <div
           className=""
           style={{
@@ -109,7 +147,37 @@ const WishlistItem = (props) => {
           <Button color="success" onClick={UpdateCourseInWishlist}>
             Update
           </Button>{' '}
-          <Button color="danger" onClick={toggle}>
+          <Button color="danger" onClick={toggleUpdate}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={modalPlanner} toggle={togglePlanner}>
+        <div
+          className=""
+          style={{
+            paddingTop: 20,
+            margin: 'auto',
+            paddingLeft: 20,
+            paddingRight: 20,
+            paddingBottom: 15,
+            borderBottomWidth: 2,
+            borderBottomStyle: 'solid',
+          }}
+        >
+          <h3 style={{}}>Insert Course to the Course Planner</h3>
+        </div>
+        <ModalBody>
+          <Button value={props.courseid} color="success" onClick={(e) => AddCoursetoCoursesPlanner(e.target.value, "FA2021")}>
+            Add to Fall Semester
+          </Button>{' '}
+          <Button value={props.courseid} color="success" onClick={(e) => AddCoursetoCoursesPlanner(e.target.value, "SP2021")}>
+            Add to Spring Semester
+          </Button>{' '}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={togglePlanner}>
             Cancel
           </Button>
         </ModalFooter>
@@ -129,7 +197,7 @@ const WishlistItem = (props) => {
             value={props.courseid}
             style={{ paddingLeft: 6, paddingRight: 6, borderRadius: 100 }}
             type="button"
-            onClick={toggle}
+            onClick={toggleUpdate}
             className="btn btn-sm btn-primary"
           >
             <img
@@ -145,6 +213,7 @@ const WishlistItem = (props) => {
           >
             Delete
           </button>
+          {addButton}
         </td>
       </tr>
     </>
