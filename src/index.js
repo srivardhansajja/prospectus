@@ -141,26 +141,25 @@ app.post('/user/wishlist', authUser, (req, res) => {
 });
 
 app.put("/updateUser", (req, res) => {
-  const Email = req.body.Email;
   const Major = req.body.Major;
   const Name = req.body.Name;
   const Picture = req.body.Picture;
   const YearEnrolled = req.body.YearEnrolled;
   const UserId = req.body.UserId;
 
-  // console.log(Email)
-  // console.log(Major)
-  // console.log(Name)
-  // console.log(Picture)
-  // console.log(YearEnrolled)
-  // console.log(UserId)
+  console.log(Major)
+  console.log(Name)
+  console.log(Picture)
+  console.log(YearEnrolled)
+  console.log(UserId)
 
 
-  const sqlUpdate = "UPDATE `Users` SET `Email` = ?,`Major` = ?, `Name` = ?, `Picture` = ?, `YearEnrolled` = ? WHERE `UserId` = ?;";
+  const sqlUpdate = "UPDATE `Users` SET `Major` = ?, `Name` = ?, `Picture` = ?, `YearEnrolled` = ? WHERE `UserId` = ?;";
   
-  connection.query(sqlUpdate, [Email, Major,Name,Picture,YearEnrolled,UserId], (error, result) => {
+  connection.query(sqlUpdate, [Major,Name,Picture,YearEnrolled,UserId], (error, result) => {
       if (error) 
       console.log(error);
+      res.sendStatus(200);
   })
 });
 
@@ -183,8 +182,10 @@ app.put("/updateUniversity", (req, res) => {
   
   connection.query(sqlUpdate, [UniCity, PrimeColor,SecondColor,UniName,EmailDomain,UniversityID], (error, result) => {
       if (error) 
-      console.log(error);
+        console.log(error);
+    res.sendStatus(200);
   })
+  
 });
 
 // route for updating entry in a user's wishlist

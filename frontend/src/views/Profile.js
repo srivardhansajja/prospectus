@@ -42,7 +42,6 @@ const Profile = () => {
   // const [UniversityID, setUniversityID] = useState('');
 
   
-  const [Email, setEmail] = useState('');
   const [Firstname, setFirstname] = useState('');
   const [Lastname, setLastname] = useState('');
   const [Major, setMajor] = useState('');
@@ -62,7 +61,21 @@ const Profile = () => {
 
   useEffect(() => {
     unisearch();
+    setMajor(UserData ? UserData.Major : "");
+    setFirstname(UserData.Name ? (UserData.Name).substr(0,(UserData.Name).indexOf(' ')) : "");
+    setLastname(UserData.Name ? (UserData.Name).substr((UserData.Name).indexOf(' ')+1) : "");
+    setPicture(UserData ? UserData.Picture : "");
+    setEnrolled(UserData.YearEnrolled ? UserData.YearEnrolled : "")
+
   }, [UserData]);
+  
+  useEffect(() => {
+    setUniversityName(UniData ? UniData.UniversityName : "");
+    setEmailDomain(UniData ? UniData.emailDomain : "");
+    setSecondColor(UniData ? UniData.SecondaryColor : "");
+    setPrimeColor(UniData ? UniData.PrimaryColor : "");
+    setUniCity(UniData ? UniData.City : "");
+  },[UniData])
 
   // const getUserProfile = async () => {
   //   const resp = await axios.get('/user/profile', { withCredentials: true });
@@ -96,10 +109,6 @@ const Profile = () => {
     });
   };
 
-
-  const EmailHandler = (e) => {
-    setEmail(e.target.value);
-  }
 
   const MajorHandler = (e) => {
     setMajor(e.target.value);
@@ -146,30 +155,35 @@ const Profile = () => {
     if(!InputDisable)
     {
     let Username = UserData.UserId;
+    console.log(Major);
+    console.log(Firstname);
+    console.log(Picture);
+    console.log(Enrolled);
 
     Axios.put('/updateUser', {
-      Email: Email ? Email : null,
       Major: Major ? Major : null,
       Name: Firstname + ' ' + Lastname,
       Picture: Picture ? Picture : null,
-      UserId: Username ? Username : null,
+      UserId: Username,
       YearEnrolled: Enrolled ? Enrolled : null
     });
-    console.log(Major)
-
     Axios.put('/updateUniversity',{
       UniCity:UniCity ? UniCity : null,
       PrimeColor:PrimeColor ? PrimeColor: null,
       SecondColor:SecondColor ? SecondColor : null,
       EmailDomain:EmailDomain ? EmailDomain : null,
-      UniName: UniversityName ? UniversityName : null,
-      UniversityID: UniData.UniversityID ? UniData.UniversityID : null
+      UniName: UniversityName ? UniversityName : "",
+      UniversityID: UniData.UniversityID
     });
 
     }
     getUserProfile();
     setInputDisable(true);
   };
+
+  const addDefaultSrc = (ev) => {
+    ev.target.src = "https://i.stack.imgur.com/34AD2.jpg"
+  }
 
   return (
     <>
@@ -178,7 +192,7 @@ const Profile = () => {
         style={{
           backgroundImage:
             "url(" +
-            require("../assets/img/theme/profile-cover.jpg").default +
+            "https://images.freeimages.com/images/large-previews/11a/perfect-blue-1198894.jpg" +
             ")",
           backgroundSize: "cover",
           backgroundPosition: "center top",
@@ -218,7 +232,8 @@ const Profile = () => {
                         alt = "Unable to load. Place a new picture URL in My Account"
                         className="rounded-circle"
                         src={UserData ? UserData.Picture : ""}
-                        // src = "https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
+                        // src = {"google.com"}
+                        onError={addDefaultSrc}
                       />
                     </a>
                   </div>
@@ -354,12 +369,12 @@ const Profile = () => {
                           <Input
                             className="form-control-alternative"
                             defaultValue = {UserData.Email ? UserData.Email : ""}
-                            // disabled = "disabled"
+                            disabled = "disabled"
                             id="input-email"
                             placeholder="jesse@example.com"
                             type="email"
                             // value = {Email}
-                            onChange = {EmailHandler}
+                            // onChange = {EmailHandler}
                           />
                         </FormGroup>
                       </Col>
