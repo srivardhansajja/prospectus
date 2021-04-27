@@ -73,6 +73,7 @@ const Wishlist = (props) => {
         courseid={course[0]}
         description={course[1]}
         onChange={getWishlist}
+        setToggleRefresh={props.refresh}
       ></WishlistItem>
     ));
   } else if (props.page == "explore") {
@@ -82,7 +83,7 @@ const Wishlist = (props) => {
         key={course}
         courseid={course[0]}
         description={course[1]}
-        onChange={getWishlist}
+        onChange={props.refresh}
       ></WishlistItem>
     ));
   }

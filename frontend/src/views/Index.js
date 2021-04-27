@@ -27,6 +27,7 @@ import Wishlist from 'components/Wishlist';
 // wishlist
 import RelevantCourses from 'components/RelevantCourses.jsx';
 // relevant course
+import CoursesPlanner from 'components/CoursesPlanner.jsx';
 import {
   Card,
   CardHeader,
@@ -54,10 +55,12 @@ const Dashboard = (props) => {
   const history = useHistory();
   const isAuthorized = useContext(Authorization)[0];
 
+
   if (!isAuthorized) history.push('/auth/login');
 
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState('data1');
+  const [toggleRefresh, setToggleRefresh] = useState(false);
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
@@ -79,23 +82,19 @@ const Dashboard = (props) => {
                   <CardHeader className="bg-transparent">
                     <Row className="align-items-center">
                       <div className="col">
-                        <h2 className="text-white mb-0">Major Progress</h2>
+                        <h2 className="text-white mb-0">Course Planner</h2>
                       </div>
                     </Row>
                   </CardHeader>
-                  <CardBody>
-                    {/* Chart */}
-                    <div className="chart">
-                      <Line
-                        data={chartExample1[chartExample1Data]}
-                        options={chartExample1.options}
-                        getDatasetAtEvent={(e) => console.log(e)}
-                      />
-                    </div>
-                  </CardBody>
+                  <CardHeader className="bg-transparent">
+                  <Row>
+                    <CoursesPlanner semester="FA2021" refresh = {{refresh: [toggleRefresh, setToggleRefresh]}}/>
+                    <CoursesPlanner semester="SP2021" refresh = {{refresh: [toggleRefresh, setToggleRefresh]}}/>
+                  </Row>
+                  </CardHeader>
                 </Card>
               </Col>
-              <Wishlist page="dashboard"/>;
+              <Wishlist page="dashboard" refresh = {{refresh: [toggleRefresh, setToggleRefresh]}}/>
             </Row>
 
             <Row className="mt-5">
