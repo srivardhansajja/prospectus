@@ -179,12 +179,13 @@ app.get('/user/coursesTaken', authUser, (req, res) => {
 app.get('/user/relevantcourses', authUser, (req, res) => {
   const sql = queries.relevantCoursesQuery;
 
+  // We select index 1 because 0 is the stored procedure, can't really supress
   connection.query(sql, [req.user], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,
-      length: Object.keys(data).length,
-      data,
+      length: Object.keys(data[1]).length,
+      data: data[1],
       message: "User's relevant courses returned successfully",
     });
   });

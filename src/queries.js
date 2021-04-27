@@ -94,32 +94,8 @@ const coursesTakenInsert = `
 `;
 
 const relevantCoursesQuery = `
-  SELECT * FROM Courses WHERE CourseID IN
-    (SELECT CourseID_fr FROM 
-      (SELECT CourseID_fr, word as keyword, count/word_count as word_weight
-      FROM Prospectus.DescFreq
-      INNER JOIN (SELECT CourseID_fr as ID, sum(count) as word_count
-        FROM Prospectus.DescFreq
-        GROUP BY CourseID_fr) as tmp ON CourseID_fr = ID
-      INNER JOIN 
-        (SELECT word as common_word 
-        FROM Prospectus.DescFreq
-            WHERE CourseID_fr = 'CS225' 
-            AND word NOT IN (
-              SELECT word
-              FROM Prospectus.DescFreq
-              GROUP BY word
-              HAVING sum(count) > 100
-              ORDER BY sum(count) DESC
-            ) 
-        ORDER BY count desc
-        LIMIT 5) as tmp2 
-      ON word = common_word
-      GROUP BY word, CourseID_fr, count, UniversityID_fr
-      HAVING CourseID_fr != 'CS225' AND UniversityID_fr = 1
-      ORDER BY word_weight DESC
-    LIMIT 20) as tempTable)
-  ORDER BY AverageGPA desc
+  CALL GetWishListRecs(?);
+  SELECT * FROM Courses WHERE CourseID IN (SELECT * FROM tmpRecsTable);
 `;
 
 const courseDescQuery = `
