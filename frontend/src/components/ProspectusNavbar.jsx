@@ -30,6 +30,10 @@ const ProspectusNavbar = (props) => {
     setProfPic(response.data[0].Picture);
   });
 
+  const addDefaultSrc = (ev) => {
+    ev.target.src = 'https://i.stack.imgur.com/34AD2.jpg';
+  };
+
   return (
     <div>
       <Navbar className="bg-gradient-info" color="light " light expand="md">
@@ -77,7 +81,11 @@ const ProspectusNavbar = (props) => {
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
               <span className="avatar avatar-sm rounded-circle">
-                <img alt="..." src={profPic} />
+              <img
+                        alt="Unable to load. Place a new picture URL in My Account"
+                        src={profPic}
+                        onError={addDefaultSrc}
+              />
               </span>
             </DropdownToggle>
             <DropdownMenu right>
