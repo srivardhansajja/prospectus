@@ -1,6 +1,7 @@
 import { Authorization } from 'index';
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
 
 import {
   DropdownMenu,
@@ -18,9 +19,16 @@ import {
 
 const ProspectusNavbar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [profPic, setProfPic] = useState('');
   const setIsAuthorized = useContext(Authorization)[1];
 
   const toggle = () => setIsOpen(!isOpen);
+
+  Axios.get('/user/profile', {
+    withCredentials: true,
+  }).then((response) => {
+    setProfPic(response.data[0].Picture);
+  });
 
   return (
     <div>
@@ -69,10 +77,7 @@ const ProspectusNavbar = (props) => {
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
               <span className="avatar avatar-sm rounded-circle">
-                <img
-                  alt="..."
-                  src={require('../assets/img/profile.jpg').default}
-                />
+                <img alt="..." src={profPic} />
               </span>
             </DropdownToggle>
             <DropdownMenu right>

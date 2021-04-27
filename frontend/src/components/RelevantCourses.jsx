@@ -28,6 +28,7 @@ const RelevantCourses = (props) => {
           var names = response.data.data.map(function (item) {
             return [item['CourseID'], item['CourseName'], item['AverageGPA']];
           });
+          names.sort((a, b) => (a[2] > b[2] ? -1 : 1));
           setRelCoursesList(names);
         },
         (error) => {
@@ -40,7 +41,7 @@ const RelevantCourses = (props) => {
     getRelCourses();
   }, []);
 
-  if (props.page == "dashboard") {
+  if (props.page == 'dashboard') {
     var listsElements = relCoursesList.map((course) => (
       <RelevantCoursesItem
         key={course}
@@ -50,7 +51,7 @@ const RelevantCourses = (props) => {
         averageGPA={course[2]}
       ></RelevantCoursesItem>
     ));
-  } else if (props.page == "explore") {
+  } else if (props.page == 'explore') {
     var listsElements = relCoursesList.map((course) => (
       <RelevantCoursesItem
         key={course}
@@ -61,8 +62,8 @@ const RelevantCourses = (props) => {
       ></RelevantCoursesItem>
     ));
   }
-  
-  if (props.page == "dashboard") {
+
+  if (props.page == 'dashboard') {
     return (
       <Col xl="13">
         <Card className="shadow">
@@ -99,7 +100,7 @@ const RelevantCourses = (props) => {
         </Card>
       </Col>
     );
-  } else if (props.page == "explore") {
+  } else if (props.page == 'explore') {
     return (
       <Col xl="5">
         <Card className="shadow">
