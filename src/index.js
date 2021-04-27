@@ -30,9 +30,9 @@ function authUser(req, res, next) {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, data) => {
-    if (err || !data?.id) return res.sendStatus(403);
+    if (err || !data.id) return res.sendStatus(403);
 
-    req.user = data?.id;
+    req.user = data.id;
 
     next();
   });
@@ -45,11 +45,10 @@ app.post('/login', async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
 
-  const {
-    hd, email, name, picture, sub,
-  } = ticket.getPayload();
+  const { hd, email, name, picture, sub } = ticket.getPayload();
 
-  const query = 'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
+  const query =
+    'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
   connection.query(query, [sub, name, email, picture, hd], (err, data) => {
     if (err) res.sendStatus(500);
     // 6 hours
@@ -65,13 +64,17 @@ app.post('/login', async (req, res) => {
 });
 
 // route for returning search results
-app.get('/search', (req, res) => {
+app.get('/search', authUser, (req, res) => {
   const sql = queries.Searchv2;
   const { q } = req.query;
-  connection.query(sql, [q, q, q], (err, data) => {
-    if (err) throw err;
-    res.json(data);
-  });
+  connection.query(
+    sql,
+    [q, req.user, q, req.user, q, req.user],
+    (err, data) => {
+      if (err) throw err;
+      res.json(data);
+    }
+  );
 });
 
 app.get('/user/profile', authUser, (req, res) => {
@@ -82,7 +85,29 @@ app.get('/user/profile', authUser, (req, res) => {
       if (err) throw err;
 
       res.json(data);
-    },
+    }
+  );
+});
+
+app.get('/unisearch', (req, res) => {
+  const { UniversityID } = req.query;
+  const sqlSearch = 'SELECT * FROM University WHERE UniversityID = ?';
+  connection.query(sqlSearch, [UniversityID], (error, result) => {
+    if (error) throw error;
+    res.json(result);
+  });
+});
+
+app.get('/user/profile', authUser, (req, res) => {
+  console.log('hi');
+  connection.query(
+    'SELECT * From Users WHERE UserId = ?',
+    [req.user],
+    (err, data) => {
+      if (err) throw err;
+
+      res.json(data);
+    }
   );
 });
 
@@ -123,6 +148,60 @@ app.post('/user/wishlist', authUser, (req, res) => {
       });
     }
   });
+});
+
+app.put('/updateUser', (req, res) => {
+  const Major = req.body.Major;
+  const Name = req.body.Name;
+  const Picture = req.body.Picture;
+  const YearEnrolled = req.body.YearEnrolled;
+  const UserId = req.body.UserId;
+
+  console.log(Major);
+  console.log(Name);
+  console.log(Picture);
+  console.log(YearEnrolled);
+  console.log(UserId);
+
+  const sqlUpdate =
+    'UPDATE `Users` SET `Major` = ?, `Name` = ?, `Picture` = ?, `YearEnrolled` = ? WHERE `UserId` = ?;';
+
+  connection.query(
+    sqlUpdate,
+    [Major, Name, Picture, YearEnrolled, UserId],
+    (error, result) => {
+      if (error) console.log(error);
+      res.sendStatus(200);
+    }
+  );
+});
+
+app.put('/updateUniversity', (req, res) => {
+  const UniCity = req.body.UniCity;
+  const PrimeColor = req.body.PrimeColor;
+  const SecondColor = req.body.SecondColor;
+  const EmailDomain = req.body.EmailDomain;
+  const UniversityID = req.body.UniversityID;
+  const UniName = req.body.UniName;
+
+  console.log(UniCity);
+  console.log(PrimeColor);
+  console.log(SecondColor);
+  console.log(EmailDomain);
+  console.log(UniversityID);
+  console.log(UniName);
+
+  const sqlUpdate =
+    'UPDATE `University` SET `City` = ?,`PrimaryColor` = ?, `SecondaryColor` = ?, `UniversityName` = ?, `emailDomain` = ? WHERE `UniversityID` = ?;';
+
+  connection.query(
+    sqlUpdate,
+    [UniCity, PrimeColor, SecondColor, UniName, EmailDomain, UniversityID],
+    (error, result) => {
+      if (error) console.log(error);
+      res.sendStatus(200);
+    }
+  );
 });
 
 // route for updating entry in a user's wishlist
@@ -179,12 +258,13 @@ app.get('/user/coursesTaken', authUser, (req, res) => {
 app.get('/user/relevantcourses', authUser, (req, res) => {
   const sql = queries.relevantCoursesQuery;
 
+  // We select index 1 because 0 is the stored procedure, can't really supress
   connection.query(sql, [req.user], (err, data) => {
     if (err) throw err;
     res.json({
       status: 200,
-      length: Object.keys(data).length,
-      data,
+      length: Object.keys(data[1]).length,
+      data: data[1],
       message: "User's relevant courses returned successfully",
     });
   });
@@ -289,32 +369,54 @@ app.delete('/user/coursesPlanner', authUser, (req, res) => {
 
 // DFS traveral where far left last node controls when we send the whole edge graph
 // Kinda a mess with callbacks & recursion lol
-function dfsHelp(courseId, depth, targetDepth = 1, relationship, edges, seen, res = null, last = true) {
+function dfsHelp(
+  courseId,
+  depth,
+  targetDepth = 1,
+  relationship,
+  edges,
+  seen,
+  res = null,
+  last = true
+) {
   if (depth >= targetDepth) {
     if (last && res) res.json({ edges, seen });
     return;
   }
-  connection.query('SELECT RelatedCourseID from CoursesRelationships WHERE CourseID_cr = ? AND Relationship = ?', [courseId, relationship], (err, data) => {
-    if (err) throw err;
-    data.forEach(({ RelatedCourseID }, i) => {
-      seen[relationship][RelatedCourseID] = true;
-      edges.push(relationship ? {
-        from:
+  connection.query(
+    'SELECT RelatedCourseID from CoursesRelationships WHERE CourseID_cr = ? AND Relationship = ?',
+    [courseId, relationship],
+    (err, data) => {
+      if (err) throw err;
+      data.forEach(({ RelatedCourseID }, i) => {
+        seen[relationship][RelatedCourseID] = true;
+        edges.push(
+          relationship
+            ? {
+                from: RelatedCourseID,
+                to: courseId,
+              }
+            : {
+                from: courseId,
+                to: RelatedCourseID,
+              }
+        );
+        dfsHelp(
           RelatedCourseID,
-        to:
-          courseId,
-      } : {
-        from:
-            courseId,
-        to:
-            RelatedCourseID,
+          depth + 1,
+          targetDepth,
+          relationship,
+          edges,
+          seen,
+          res,
+          last && i === data.length - 1
+        );
       });
-      dfsHelp(RelatedCourseID, depth + 1, targetDepth, relationship, edges, seen, res, last && (i === data.length - 1));
-    });
-    if (last && data.length === 0 && res) {
-      res.json({ edges, seen });
+      if (last && data.length === 0 && res) {
+        res.json({ edges, seen });
+      }
     }
-  });
+  );
 }
 
 app.get('/relational/:courseId', (req, res) => {
@@ -322,7 +424,7 @@ app.get('/relational/:courseId', (req, res) => {
   const { depth } = req.query;
   if (depth > 2) res.sendStatus(403);
   const edges = [];
-  const seen = {0: {}, 1: {}};
+  const seen = { 0: {}, 1: {} };
   dfsHelp(courseId, 0, depth, 0, edges, seen);
   dfsHelp(courseId, 0, depth, 1, edges, seen, res);
 });

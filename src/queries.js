@@ -41,20 +41,19 @@ const Search = `
 `;
 const Searchv2 = `
 (SELECT * FROM Prospectus.Courses 
-WHERE LOWER(CourseID) LIKE REPLACE(CONCAT(?, '%'), ' ', '')
+WHERE LOWER(CourseID) LIKE REPLACE(CONCAT(?, '%'), ' ', '') AND UniversityID_c = (SELECT UniversityID_u FROM Users WHERE UserID = ?)
 LIMIT 10)
 UNION (
   SELECT * FROM Prospectus.Courses 
-  WHERE CourseName LIKE CONCAT('%', ?, '%') 
+  WHERE CourseName LIKE CONCAT('%', ?, '%') AND UniversityID_c = (SELECT UniversityID_u FROM Users WHERE UserID = ?)
   LIMIT 10
 ) UNION (
   SELECT * FROM Prospectus.Courses 
-  WHERE Description LIKE CONCAT('%', ?, '%') 
+  WHERE Description LIKE CONCAT('%', ?, '%') AND UniversityID_c = (SELECT UniversityID_u FROM Users WHERE UserID = ?)
   LIMIT 10
 )
 LIMIT 10
 `;
-
 
 const wishlistQuery = `
   SELECT CourseID_wish, Description 
@@ -98,49 +97,23 @@ const coursesTakenDelete = `
   WHERE UserID_ct = ? AND CourseID_ct = ?
 `;
 
-const coursesPlannerQuery = `
-  SELECT cp.CourseID_cp, c.CourseName, c.CreditHours  
-  FROM CoursesPlanner cp JOIN Courses c ON cp.CourseID_cp = c.CourseID
-  WHERE cp.UserID_cp = ? AND cp.CourseSemester_cp = ?
+const coursesPlannerQuery = `	
+SELECT cp.CourseID_cp, c.CourseName, c.CreditHours  	
+FROM CoursesPlanner cp JOIN Courses c ON cp.CourseID_cp = c.CourseID	
+WHERE cp.UserID_cp = ? AND cp.CourseSemester_cp = ?	
 `;
-
-const coursesPlannerInsert = `
-  INSERT INTO CoursesPlanner(UserID_cp, CourseID_cp, CourseSemester_cp)
-  VALUE (?, ?, ?)
+const coursesPlannerInsert = `	
+INSERT INTO CoursesPlanner(UserID_cp, CourseID_cp, CourseSemester_cp)	
+VALUE (?, ?, ?)	
 `;
-
-const coursesPlannerDelete = `
-  DELETE FROM CoursesPlanner 
-  WHERE UserID_cp = ? AND CourseID_cp = ? AND CourseSemester_cp = ?
+const coursesPlannerDelete = `	
+DELETE FROM CoursesPlanner 	
+WHERE UserID_cp = ? AND CourseID_cp = ? AND CourseSemester_cp = ?	
 `;
 
 const relevantCoursesQuery = `
-  SELECT * FROM Courses WHERE CourseID IN
-    (SELECT CourseID_fr FROM 
-      (SELECT CourseID_fr, word as keyword, count/word_count as word_weight
-      FROM Prospectus.DescFreq
-      INNER JOIN (SELECT CourseID_fr as ID, sum(count) as word_count
-        FROM Prospectus.DescFreq
-        GROUP BY CourseID_fr) as tmp ON CourseID_fr = ID
-      INNER JOIN 
-        (SELECT word as common_word 
-        FROM Prospectus.DescFreq
-            WHERE CourseID_fr = 'CS225' 
-            AND word NOT IN (
-              SELECT word
-              FROM Prospectus.DescFreq
-              GROUP BY word
-              HAVING sum(count) > 100
-              ORDER BY sum(count) DESC
-            ) 
-        ORDER BY count desc
-        LIMIT 5) as tmp2 
-      ON word = common_word
-      GROUP BY word, CourseID_fr, count, UniversityID_fr
-      HAVING CourseID_fr != 'CS225' AND UniversityID_fr = 1
-      ORDER BY word_weight DESC
-    LIMIT 20) as tempTable)
-  ORDER BY AverageGPA desc
+  CALL GetWishListRecs(?);
+  SELECT * FROM Courses WHERE CourseID IN (SELECT * FROM tmpRecsTable);
 `;
 
 const courseDescQuery = `
@@ -158,6 +131,7 @@ module.exports = {
   coursesPlannerInsert,
   coursesPlannerDelete,
   coursesTakenQuery,
+  coursesTakenDelete,
   relevantCoursesQuery,
   courseDescQuery,
   coursesTakenInsert,

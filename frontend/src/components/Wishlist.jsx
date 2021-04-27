@@ -24,7 +24,7 @@ const Wishlist = (props) => {
   const username = 'ajackson1';
   var data;
   var searchBarText = '';
-  
+
   const [wishlistList, setWishlistList] = useState([]);
   const [isLoaded, setIsLoaded] = useState(0);
   const [isAuthorized, setIsAuthorized] = useContext(Authorization);
@@ -65,7 +65,7 @@ const Wishlist = (props) => {
     getWishlist();
     setIsLoaded(1);
   }
-  if (props.page == "dashboard") {
+  if (props.page == 'dashboard') {
     var listsElements = wishlistList.map((course) => (
       <WishlistItem
         page="dashboard"
@@ -76,7 +76,7 @@ const Wishlist = (props) => {
         setToggleRefresh={props.refresh}
       ></WishlistItem>
     ));
-  } else if (props.page == "explore") {
+  } else if (props.page == 'explore') {
     var listsElements = wishlistList.map((course) => (
       <WishlistItem
         page="explore"
@@ -104,11 +104,14 @@ const Wishlist = (props) => {
           </Row>
           <Row className="pl-0 align-items-center">
             <div className="col">
-              <Form className="mt-2 mb--1 navbar-search">
+              <Form
+                className="mt-2 mb--1 navbar-search"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
                 <FormGroup className="mb-0">
-                  <InputGroup
-                    className="input-group-alternative"
-                  >
+                  <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="fas fa-search" />

@@ -82,7 +82,12 @@ const Explore = () => {
               <CardHeader className="bg-transparent">
                 <Row className="align-items-center">
                   <div className="col">
-                    <Form className="navbar-search navbar-search-dark ml-lg-auto">
+                    <Form
+                      className="navbar-search navbar-search-dark ml-lg-auto"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
                       <FormGroup className="mb-0">
                         <InputGroup className="input-group-alternative">
                           <InputGroupAddon addonType="prepend">
