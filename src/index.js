@@ -65,10 +65,10 @@ app.post('/login', async (req, res) => {
 });
 
 // route for returning search results
-app.get('/search', (req, res) => {
+app.get('/search', authUser, (req, res) => {
   const sql = queries.Searchv2;
   const { q } = req.query;
-  connection.query(sql, [q, q, q], (err, data) => {
+  connection.query(sql, [q, req.user, q, req.user, q, req.user], (err, data) => {
     if (err) throw err;
     res.json(data);
   });
