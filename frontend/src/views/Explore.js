@@ -54,6 +54,8 @@ const Explore = () => {
   const [resultsList, setResultsList] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
+  const refresh = useState(false);
+
   useEffect(() => {
     const getSearchResults = async (q) => {
       if (!q) return;
@@ -116,6 +118,7 @@ const Explore = () => {
                   resultsList.map(({ CourseID, CourseName, Description }) => (
                     <SearchResult
                       key={CourseID}
+                      refresh={refresh}
                       courseid={CourseID}
                       coursename={CourseName}
                       description={Description}
@@ -151,10 +154,10 @@ const Explore = () => {
                 courseid={selectedCourse}
                 coursesetter={setSelectedCourse}
               />
-              <Wishlist page="explore" />
+              <Wishlist page="explore" refresh={refresh} />
             </Row>
             <Row className="mt-5">
-              <CourseDescription courseid={selectedCourse} />
+              <CourseDescription courseid={selectedCourse} refresh={refresh} />
               <RelevantCourses page="explore" />
             </Row>
           </Col>

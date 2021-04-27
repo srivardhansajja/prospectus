@@ -3,8 +3,7 @@ import Axios from 'axios';
 import { Card, CardTitle, Badge, CardText } from 'reactstrap';
 
 function truncate(str, n) {
-  if (str)
-    return str.length > n ? str.substr(0, n - 1) + '...' : str;
+  if (str) return str.length > n ? str.substr(0, n - 1) + '...' : str;
 }
 
 const SearchResult = (props) => {
@@ -69,7 +68,10 @@ const SearchResult = (props) => {
               value={props.courseid}
               type="button"
               className="btn btn-sm btn-success float-right mr-2"
-              onClick={(e) => AddCourseToWishlist(e.target.value)}
+              onClick={(e) => {
+                AddCourseToWishlist(e.target.value);
+                props.refresh[1](!props.refresh[0]);
+              }}
             >
               + Wishlist
             </button>

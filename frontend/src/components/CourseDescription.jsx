@@ -128,7 +128,10 @@ const CourseDescription = (props) => {
               value={props.courseid}
               type="button"
               className="btn btn-sm btn-success float-right"
-              onClick={(e) => AddCourseToWishlist(e.target.value)}
+              onClick={(e) => {
+                AddCourseToWishlist(e.target.value);
+                props.refresh[1](!props.refresh[0]);
+              }}
             >
               + Wishlist
             </button>

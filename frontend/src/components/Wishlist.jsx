@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Axios from 'axios';
 import WishlistItem from './WishlistItem.jsx';
 
@@ -21,12 +21,10 @@ import {
 } from 'reactstrap';
 
 const Wishlist = (props) => {
-  const username = 'ajackson1';
   var data;
   var searchBarText = '';
 
   const [wishlistList, setWishlistList] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(0);
   const [isAuthorized, setIsAuthorized] = useContext(Authorization);
 
   const setSearchBarText = (text) => {
@@ -39,12 +37,10 @@ const Wishlist = (props) => {
     if (isAuthorized) {
       Axios.get('/user/wishlist', {
         withCredentials: true,
-        params: { userid: username, keywords: keywords_ },
+        params: { keywords: keywords_ },
       }).then(
         (response) => {
-          console.log(response.data.data);
           data = JSON.parse(JSON.stringify(response.data));
-          console.log(data);
 
           var names = response.data.data.map(function (item) {
             return [item['CourseID_wish'], item['Description']];
@@ -61,10 +57,9 @@ const Wishlist = (props) => {
     return [];
   };
 
-  if (isLoaded === 0) {
+  useEffect(() => {
     getWishlist();
-    setIsLoaded(1);
-  }
+  }, [props.refresh]);
 
   let styles = {
     padding: 0,
@@ -91,7 +86,7 @@ const Wishlist = (props) => {
         key={course}
         courseid={course[0]}
         description={course[1]}
-        onChange={props.refresh}
+        onChange={getWishlist}
       ></WishlistItem>
     ));
   }
