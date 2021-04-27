@@ -8,6 +8,8 @@ import {
   ModalFooter,
   Label,
   Input,
+  Row,
+  Col,
 } from 'reactstrap';
 
 function truncate(str, n) {
@@ -23,7 +25,7 @@ const WishlistItem = (props) => {
 
   const toggleUpdate = () => setModalUpdate(!modalUpdate);
   const togglePlanner = () => setModalPlanner(!modalPlanner);
-  
+
   const DeleteCourseFromWishlist = (courseid) => {
     console.log(username, courseid);
     Axios.delete('/user/wishlist', {
@@ -39,7 +41,7 @@ const WishlistItem = (props) => {
       }
     );
   };
-  
+
   const AddCoursetoCoursesPlanner = (courseid, semester) => {
     togglePlanner();
     console.log(courseid, semester);
@@ -88,22 +90,24 @@ const WishlistItem = (props) => {
   };
 
   var truncateValue;
-  if (props.page == "dashboard") {
-    truncateValue = 50
-  } else if (props.page == "explore") {
-    truncateValue = 20
+  if (props.page == 'dashboard') {
+    truncateValue = 50;
+  } else if (props.page == 'explore') {
+    truncateValue = 20;
   }
-  if (props.page == "dashboard") {
-    var addButton = (<button
-            value={props.courseid}
-            type="button"
-            onClick={togglePlanner}
-            className="btn btn-sm btn-success"
-          >
-            + Planner
-          </button>)
+  if (props.page == 'dashboard') {
+    var addButton = (
+      <button
+        value={props.courseid}
+        type="button"
+        onClick={togglePlanner}
+        className="btn btn-sm btn-success"
+      >
+        + Planner
+      </button>
+    );
   } else {
-    var addButton = <></>
+    var addButton = <></>;
   }
   return (
     <>
@@ -166,15 +170,32 @@ const WishlistItem = (props) => {
             borderBottomStyle: 'solid',
           }}
         >
-          <h3 style={{}}>Insert Course to the Course Planner</h3>
+          <h3 style={{}}>Add class to your planner</h3>
         </div>
         <ModalBody>
-          <Button value={props.courseid} color="success" onClick={(e) => AddCoursetoCoursesPlanner(e.target.value, "FA2021")}>
-            Add to Fall Semester
-          </Button>{' '}
-          <Button value={props.courseid} color="success" onClick={(e) => AddCoursetoCoursesPlanner(e.target.value, "SP2021")}>
-            Add to Spring Semester
-          </Button>{' '}
+          <Row className="align-items-center">
+            <Col className="align-items-center">
+              <Button
+                style={{ marginLeft: 20 }}
+                value={props.courseid}
+                color="success"
+                onClick={(e) =>
+                  AddCoursetoCoursesPlanner(e.target.value, 'FA2021')
+                }
+              >
+                Add to Fall Semester
+              </Button>{' '}
+              <Button
+                value={props.courseid}
+                color="success"
+                onClick={(e) =>
+                  AddCoursetoCoursesPlanner(e.target.value, 'SP2021')
+                }
+              >
+                Add to Spring Semester
+              </Button>{' '}
+            </Col>
+          </Row>
         </ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={togglePlanner}>

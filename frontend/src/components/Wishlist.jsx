@@ -65,6 +65,13 @@ const Wishlist = (props) => {
     getWishlist();
     setIsLoaded(1);
   }
+
+  let styles = {
+    padding: 0,
+    overflowY: 'auto',
+    height: 360,
+  };
+
   if (props.page == 'dashboard') {
     var listsElements = wishlistList.map((course) => (
       <WishlistItem
@@ -76,6 +83,7 @@ const Wishlist = (props) => {
         setToggleRefresh={props.refresh}
       ></WishlistItem>
     ));
+    styles.height = 350;
   } else if (props.page == 'explore') {
     var listsElements = wishlistList.map((course) => (
       <WishlistItem
@@ -128,13 +136,7 @@ const Wishlist = (props) => {
             </div>
           </Row>
         </CardHeader>
-        <CardBody
-          style={{
-            padding: 0,
-            overflowY: 'auto',
-            height: 360,
-          }}
-        >
+        <CardBody style={styles}>
           <Table className="table-flush" responsive>
             <thead className="thead-light">
               <tr>

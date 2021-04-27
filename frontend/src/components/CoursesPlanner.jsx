@@ -4,17 +4,10 @@ import Axios from 'axios';
 import CoursesPlannerItem from './CoursesPlannerItem.jsx';
 import { Authorization } from '../index.js';
 
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Row,
-  Table,
-  Col,
-} from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Table, Col } from 'reactstrap';
 import { data } from 'jquery';
 
-const CoursesPlanner = ({semester, refresh}) => {
+const CoursesPlanner = ({ semester, refresh }) => {
   const username = 'ajackson1';
 
   const [CoursesPlannerList, setCoursesPlannerList] = useState([]);
@@ -24,11 +17,15 @@ const CoursesPlanner = ({semester, refresh}) => {
     if (isAuthorized) {
       Axios.get('/user/coursesPlanner', {
         withCredentials: true,
-        params: {userid: username, semester: semester},
+        params: { userid: username, semester: semester },
       }).then(
         (response) => {
           var names = response.data.data.map(function (item) {
-            return [item['CourseID_cp'], item['CourseName'], item['CreditHours']];
+            return [
+              item['CourseID_cp'],
+              item['CourseName'],
+              item['CreditHours'],
+            ];
           });
           setCoursesPlannerList(names);
         },
@@ -53,9 +50,9 @@ const CoursesPlanner = ({semester, refresh}) => {
     <CoursesPlannerItem
       key={course}
       courseid={course[0]}
-      coursename = {course[1]}
-      credithours = {course[2]}
-      semester = {semester}
+      coursename={course[1]}
+      credithours={course[2]}
+      semester={semester}
       onChange={getCoursesPlanner}
     ></CoursesPlannerItem>
   ));
@@ -82,7 +79,7 @@ const CoursesPlanner = ({semester, refresh}) => {
               <tr>
                 <th scope="col">Course ID</th>
                 <th scope="col">Course Name</th>
-                <th scope="col">Credit Hours</th>
+                <th scope="col">Credits</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>

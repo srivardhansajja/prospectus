@@ -41,17 +41,7 @@ import {
   Col,
 } from 'reactstrap';
 
-// core components
-import {
-  chartOptions,
-  parseOptions,
-  chartExample1,
-  chartExample2,
-} from 'variables/charts.js';
-
 import { Authorization } from '../index.js';
-
-// import Header from "components/Headers/Header.js";
 
 const Dashboard = (props) => {
   const history = useHistory();
@@ -59,19 +49,8 @@ const Dashboard = (props) => {
 
   if (!isAuthorized) history.push('/auth/login');
 
-  const [activeNav, setActiveNav] = useState(1);
-  const [chartExample1Data, setChartExample1Data] = useState('data1');
   const [toggleRefresh, setToggleRefresh] = useState(false);
 
-  if (window.Chart) {
-    parseOptions(Chart, chartOptions());
-  }
-
-  const toggleNavs = (e, index) => {
-    e.preventDefault();
-    setActiveNav(index);
-    setChartExample1Data('data' + index);
-  };
   return (
     <>
       <Container className="mt--7" fluid>
@@ -107,7 +86,7 @@ const Dashboard = (props) => {
               />
             </Row>
 
-            <Row className="mt-5">
+            <Row className="mt-3">
               <Col className="mb-5 mb-xl-0" xl="7">
                 <Card className="shadow">
                   <CardHeader className="border-0">
