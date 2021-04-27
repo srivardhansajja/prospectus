@@ -445,7 +445,7 @@ const Profile = () => {
                             id="input-Picture"
                             placeholder="URL Link for Profile Picture"
                             type="text"
-                            // value = {Picture}
+                            value = {UserData.Picture ? UserData.Picture : ""}
                             onChange = {PictureHandler}
                           />
                         </FormGroup>
