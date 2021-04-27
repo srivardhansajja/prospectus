@@ -50,20 +50,19 @@ const Explore = () => {
 
   if (!isAuthorized) history.push('/auth/login');
 
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
   const [resultsList, setResultsList] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   useEffect(() => {
     const getSearchResults = async (q) => {
-      if (!q)
-        return;
+      if (!q) return;
       const resp = await Axios.get('/search', {
         params: { q: q.toLowerCase() },
       });
-      console.log(resp.data)
+      console.log(resp.data);
       setResultsList(resp.data);
-    }
+    };
     getSearchResults(searchTerm);
   }, [searchTerm]);
 
@@ -108,41 +107,50 @@ const Explore = () => {
                   overflowY: 'auto',
                 }}
               >
-                {searchTerm.length ? resultsList.map(({ CourseID, CourseName, Description }) => (
-                  <SearchResult
-                    key={CourseID}
-                    courseid={CourseID}
-                    coursename={CourseName}
-                    description={Description}
-                    setCourse={setSelectedCourse}
-                  />)) :
-                  <div style={{
-                    borderWidth: 2,
-                    borderStyle: 'solid',
-                    borderColor: 'white',
-                    borderRadius: 20,
-                    textAlign: 'center',
-                    color: 'white',
-                    padding: 10,
-                    marginTop: 15,
-                    marginLeft: 30,
-                    marginRight: 30,
-                  }}>
-                    Search for courses based on name, department, description, subtopics or
-                    general education category
-                </div>}
+                {searchTerm.length ? (
+                  resultsList.map(({ CourseID, CourseName, Description }) => (
+                    <SearchResult
+                      key={CourseID}
+                      courseid={CourseID}
+                      coursename={CourseName}
+                      description={Description}
+                      setCourse={setSelectedCourse}
+                    />
+                  ))
+                ) : (
+                  <div
+                    style={{
+                      borderWidth: 2,
+                      borderStyle: 'solid',
+                      borderColor: 'white',
+                      borderRadius: 20,
+                      textAlign: 'center',
+                      color: 'white',
+                      padding: 10,
+                      marginTop: 15,
+                      marginLeft: 30,
+                      marginRight: 30,
+                    }}
+                  >
+                    Search for courses based on name, department, description,
+                    subtopics or general education category
+                  </div>
+                )}
               </CardBody>
             </Card>
           </Col>
 
           <Col>
             <Row style={{ padding: -10, marginBottom: -20 }}>
-              <Dependencies courseid={selectedCourse} />
-              <Wishlist />
+              <Dependencies
+                courseid={selectedCourse}
+                coursesetter={setSelectedCourse}
+              />
+              <Wishlist page="explore" />
             </Row>
             <Row className="mt-5">
               <CourseDescription courseid={selectedCourse} />
-              <RelevantCourses />
+              <RelevantCourses page="explore" />
             </Row>
           </Col>
         </Row>

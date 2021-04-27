@@ -4,14 +4,7 @@ import Axios from 'axios';
 import CoursesTakenItem from './CoursesTakenItem.jsx';
 import { Authorization } from '../index.js';
 
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Row,
-  Table,
-  Col,
-} from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Table, Col } from 'reactstrap';
 import { data } from 'jquery';
 
 const CoursesTaken = () => {
@@ -26,7 +19,11 @@ const CoursesTaken = () => {
       }).then(
         (response) => {
           var names = response.data.data.map(function (item) {
-            return [item['CourseID_ct'], item['CourseName'], item['CreditHours']];
+            return [
+              item['CourseID_ct'],
+              item['CourseName'],
+              item['CreditHours'],
+            ];
           });
           setCoursesTakenList(names);
         },
@@ -47,8 +44,8 @@ const CoursesTaken = () => {
     <CoursesTakenItem
       key={course}
       courseid={course[0]}
-      coursename = {course[1]}
-      credithours = {course[2]}
+      coursename={course[1]}
+      credithours={course[2]}
       onChange={getCoursesTaken}
     ></CoursesTakenItem>
   ));

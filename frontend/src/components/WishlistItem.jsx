@@ -37,7 +37,7 @@ const WishlistItem = (props) => {
       }
     );
   };
-
+  
   const UpdateCourseInWishlist = () => {
     toggle();
     console.log(username, props.courseid, courseDesc);
@@ -59,6 +59,13 @@ const WishlistItem = (props) => {
       }
     );
   };
+
+  var truncateValue;
+  if (props.page == "dashboard") {
+    truncateValue = 50
+  } else if (props.page == "explore") {
+    truncateValue = 20
+  }
 
   return (
     <>
@@ -115,7 +122,7 @@ const WishlistItem = (props) => {
         <td
           style={{ verticalAlign: 'middle', paddingLeft: 0, paddingRight: 0 }}
         >
-          {truncate(props.description, 20)}
+          {truncate(props.description, truncateValue)}
         </td>
         <td>
           <button

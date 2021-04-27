@@ -7,8 +7,8 @@ import { Card, CardHeader, CardBody, Row, Col, Button } from 'reactstrap';
 const options = {
   height: '100%',
   interaction: {
-    dragView: false,
-    zoomView: false,
+    dragView: true,
+    zoomView: true,
     hover: true,
   },
   layout: {
@@ -51,36 +51,42 @@ const Dependencies = (props) => {
       const [node] = nodes;
       if (node) {
         setCid(node);
+        props.coursesetter(node);
       }
     },
   };
 
-  useEffect(() => {
-    const getGraph = async (courseId) => {
-      const resp = await Axios.get(`/relational/${courseId}`, {
-        params: { depth: 1 },
-      });
-      const { edges, seen } = resp.data;
-      const nodesArr = [courseId].concat(
-        edges.map(({ to, from }) => [to, from]).flat()
-      );
-      const nodes = [...new Set(nodesArr)].map((e) => ({
-        id: e,
-        label: `<b>${e}</b>`,
-        color: seen[0][e] ? '#2a9d8f' : e === courseId ? '#f4a261' : '#e9c46a',
-      }));
-      // out edges, main node, in edges
-      const result = {
-        graph: {
-          nodes,
-          edges,
-        },
-      };
-      console.log(result);
-      setCourseGraph(result);
+  const getGraph = async (courseId) => {
+    const resp = await Axios.get(`/relational/${courseId}`, {
+      params: { depth: 2 },
+    });
+    const { edges, seen } = resp.data;
+    const nodesArr = [courseId].concat(
+      edges.map(({ to, from }) => [to, from]).flat()
+    );
+    const nodes = [...new Set(nodesArr)].map((e) => ({
+      id: e,
+      label: `<b>${e}</b>`,
+      color: seen[0][e] ? '#2dce89' : e === courseId ? '#11cdef' : '#fb6340',
+    }));
+    // out edges, main node, in edges
+    const result = {
+      graph: {
+        nodes,
+        edges,
+      },
     };
-    if (cid || props.courseid) getGraph(cid || props.courseid);
-  }, [props.courseid, cid]);
+    console.log(result);
+    setCourseGraph(result);
+  };
+
+  useEffect(() => {
+    setCid(props.courseid);
+  }, [props.courseid]);
+
+  useEffect(() => {
+    if (cid) getGraph(cid);
+  }, [cid]);
 
   const resetGraph = () => {
     if (network != null) network.fit();
@@ -117,10 +123,10 @@ const Dependencies = (props) => {
                 getNetwork={(network) => setNetwork(network)}
               />
             ) : (
-                <>
-                  <i>(Select a course to view dependencies and prerequisites)</i>
-                </>
-              )}
+              <>
+                <i>(Select a course to view dependencies and prerequisites)</i>
+              </>
+            )}
           </CardBody>
         </Card>
       </Col>

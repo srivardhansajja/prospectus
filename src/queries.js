@@ -41,20 +41,19 @@ const Search = `
 `;
 const Searchv2 = `
 (SELECT * FROM Prospectus.Courses 
-WHERE LOWER(CourseID) LIKE REPLACE(CONCAT(?, '%'), ' ', '')
+WHERE LOWER(CourseID) LIKE REPLACE(CONCAT(?, '%'), ' ', '') AND UniversityID_c = (SELECT UniversityID_u FROM Users WHERE UserID = ?)
 LIMIT 10)
 UNION (
   SELECT * FROM Prospectus.Courses 
-  WHERE CourseName LIKE CONCAT('%', ?, '%') 
+  WHERE CourseName LIKE CONCAT('%', ?, '%') AND UniversityID_c = (SELECT UniversityID_u FROM Users WHERE UserID = ?)
   LIMIT 10
 ) UNION (
   SELECT * FROM Prospectus.Courses 
-  WHERE Description LIKE CONCAT('%', ?, '%') 
+  WHERE Description LIKE CONCAT('%', ?, '%') AND UniversityID_c = (SELECT UniversityID_u FROM Users WHERE UserID = ?)
   LIMIT 10
 )
 LIMIT 10
 `;
-
 
 const wishlistQuery = `
   SELECT CourseID_wish, Description 

@@ -15,8 +15,7 @@ function truncate(str, n) {
 const RelevantCoursesItem = (props) => {
   const avgGPA = props.averageGPA;
 
-  var barCol, barValue, gpa;
-
+  var barCol, barValue, gpa, truncateValue;
   if (avgGPA != 0.0) {
     barCol = barColor(avgGPA);
     barValue = ((avgGPA / 4.0) * 100).toString();
@@ -26,12 +25,17 @@ const RelevantCoursesItem = (props) => {
     barValue = '0';
     gpa = 'NA';
   }
+  if (props.page == "dashboard") {
+    truncateValue = 50
+  } else if (props.page == "explore") {
+    truncateValue = 25
+  }
 
   return (
     <>
       <tr>
         <th scope="row">{props.courseid}</th>
-        <td>{truncate(props.coursename, 25)}</td>
+        <td>{truncate(props.coursename, truncateValue)}</td>
         <td>
           <div className="d-flex align-items-center">
             <span className="mr-2">{gpa}</span>

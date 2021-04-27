@@ -14,7 +14,7 @@ import {
   Col,
 } from 'reactstrap';
 
-const RelevantCourses = () => {
+const RelevantCourses = (props) => {
   const [relCoursesList, setRelCoursesList] = useState([]);
   const [isAuthorized, setIsAuthorized] = useContext(Authorization);
 
@@ -40,51 +40,103 @@ const RelevantCourses = () => {
     getRelCourses();
   }, []);
 
-  var listsElements = relCoursesList.map((course) => (
-    <RelevantCoursesItem
-      key={course}
-      courseid={course[0]}
-      coursename={course[1]}
-      averageGPA={course[2]}
-    ></RelevantCoursesItem>
-  ));
-
-  return (
-    <Col xl="5">
-      <Card className="shadow">
-        <CardHeader className="border-0">
-          <Row className="align-items-center">
-            <div className="col">
-              <h3 className="mb-0">Relevant Courses</h3>
-            </div>
-            <div className="col text-right">
-              <Button color="info" onClick={getRelCourses} size="sm">
-                Refresh
-              </Button>
-            </div>
-          </Row>
-        </CardHeader>
-        <CardBody
-          style={{
-            padding: 0,
-            overflowY: 'auto',
-            height: 260,
-          }}
-        >
-          <Table className="align-items-center table-flush" responsive>
-            <thead className="thead-light">
-              <tr>
-                <th scope="col">Course ID</th>
-                <th scope="col">Course Name</th>
-                <th scope="col">Average GPA</th>
-              </tr>
-            </thead>
-            <tbody>{listsElements}</tbody>
-          </Table>
-        </CardBody>
-      </Card>
-    </Col>
-  );
+  if (props.page == "dashboard") {
+    var listsElements = relCoursesList.map((course) => (
+      <RelevantCoursesItem
+        key={course}
+        page="dashboard"
+        courseid={course[0]}
+        coursename={course[1]}
+        averageGPA={course[2]}
+      ></RelevantCoursesItem>
+    ));
+  } else if (props.page == "explore") {
+    var listsElements = relCoursesList.map((course) => (
+      <RelevantCoursesItem
+        key={course}
+        page="explore"
+        courseid={course[0]}
+        coursename={course[1]}
+        averageGPA={course[2]}
+      ></RelevantCoursesItem>
+    ));
+  }
+  
+  if (props.page == "dashboard") {
+    return (
+      <Col xl="13">
+        <Card className="shadow">
+          <CardHeader className="border-0">
+            <Row className="align-items-center">
+              <div className="col">
+                <h3 className="mb-0">Relevant Courses</h3>
+              </div>
+              <div className="col text-right">
+                <Button color="info" onClick={getRelCourses} size="sm">
+                  Refresh
+                </Button>
+              </div>
+            </Row>
+          </CardHeader>
+          <CardBody
+            style={{
+              padding: 0,
+              overflowY: 'auto',
+              height: 290,
+            }}
+          >
+            <Table className="align-items-center table-flush" responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col">Course ID</th>
+                  <th scope="col">Course Name</th>
+                  <th scope="col">Average GPA</th>
+                </tr>
+              </thead>
+              <tbody>{listsElements}</tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </Col>
+    );
+  } else if (props.page == "explore") {
+    return (
+      <Col xl="5">
+        <Card className="shadow">
+          <CardHeader className="border-0">
+            <Row className="align-items-center">
+              <div className="col">
+                <h3 className="mb-0">Relevant Courses</h3>
+              </div>
+              <div className="col text-right">
+                <Button color="info" onClick={getRelCourses} size="sm">
+                  Refresh
+                </Button>
+              </div>
+            </Row>
+          </CardHeader>
+          <CardBody
+            style={{
+              padding: 0,
+              overflowY: 'auto',
+              height: 260,
+            }}
+          >
+            <Table className="align-items-center table-flush" responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col">Course ID</th>
+                  <th scope="col">Course Name</th>
+                  <th scope="col">Average GPA</th>
+                </tr>
+              </thead>
+              <tbody>{listsElements}</tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </Col>
+    );
+  }
 };
 
 export default RelevantCourses;
