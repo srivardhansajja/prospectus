@@ -38,21 +38,24 @@ const Profile = () => {
   
   const [UserData, setUserData] = useState('');
   const [UniData, setUniData] = useState('');
+  const [InputDisable, setInputDisable] = useState(true);
   // const [UniversityID, setUniversityID] = useState('');
 
   
-  // const [Username, setUsername] = useState('');
-  // const [Email, setEmail] = useState('');
-  // const [Firstname, setFirstname] = useState('');
-  // const [Lastname, setLastname] = useState('');
-  // const [Major, setMajor] = useState('');
-  // const [Picture, setPicture] = useState('');
-  // const [Enrolled, setEnrolled] = useState('');
-  
-  
+  const [Email, setEmail] = useState('');
+  const [Firstname, setFirstname] = useState('');
+  const [Lastname, setLastname] = useState('');
+  const [Major, setMajor] = useState('');
+  const [Picture, setPicture] = useState('');
+  const [Enrolled, setEnrolled] = useState('');
 
-  let input_disable = document.getElementById("input_disable");
+  const [UniCity, setUniCity] = useState('');
+  const [PrimeColor, setPrimeColor] = useState('');
+  const [SecondColor, setSecondColor] = useState('');
+  const [EmailDomain, setEmailDomain] = useState('');
+  const [UniversityName, setUniversityName] = useState('');
 
+    
   useEffect(() => {
     getUserProfile();
   }, []);
@@ -60,6 +63,7 @@ const Profile = () => {
   useEffect(() => {
     unisearch();
   }, [UserData]);
+
   // const getUserProfile = async () => {
   //   const resp = await axios.get('/user/profile', { withCredentials: true });
   //   const [info] = resp.data
@@ -80,7 +84,7 @@ const Profile = () => {
   }
 
   const disableSetting = () => {
-    input_disable.disabled = !input_disable.disabled;
+    setInputDisable(!InputDisable);
   }
 
   const unisearch = () => {
@@ -92,35 +96,57 @@ const Profile = () => {
     });
   };
 
+
+  const EmailHandler = (e) => {
+    setEmail(e.target.value);
+  }
+
+  const MajorHandler = (e) => {
+    setMajor(e.target.value);
+  }
+
+  const FirstnameHandler = (e) => {
+    setFirstname(e.target.value);
+  }
+
+  const LastnameHandler = (e) => {
+    setLastname(e.target.value);
+  }
+
+  const PictureHandler = (e) => {
+    setPicture(e.target.value);
+  }
+
+  const EnrolledHandler = (e) => {
+    setEnrolled(e.target.value);
+  }
+
+  const UniCityHandler = (e) => {
+    setUniCity(e.target.value);
+  }
+
+  const PrimeColorHandler = (e) => {
+    setPrimeColor(e.target.value);
+  }
+
+  const SecondColorHandler = (e) => {
+    setSecondColor(e.target.value);
+  }
+
+  const EmailDomainHandler = (e) => {
+    setEmailDomain(e.target.value);
+  }
+
+  const UniversityNameHandler = (e) => {
+    setUniversityName(e.target.value);
+  }
+
   const updateUser = () => {
-    
-    // setUsername(document.getElementById("input-username").value)
-    // setEmail(document.getElementById("input-email").value)
-    // setFirstname(document.getElementById("input-first-name").value)
-    // setLastname(document.getElementById("input-last-name").value)
-    // setMajor(document.getElementById("input-Major").value)
-    // setPicture(document.getElementById("input-Picture").value)
-    // setEnrolled(document.getElementById("input-Enrolled").value)
 
-    if(!input_disable.disabled)
+    if(!InputDisable)
     {
-    let Username = document.getElementById("input-username").value
-    let Email = document.getElementById("input-email").value
-    let Firstname = document.getElementById("input-first-name").value
-    let Lastname = document.getElementById("input-last-name").value
-    let Major = document.getElementById("input-Major").value
-    let Picture = document.getElementById("input-Picture").value
-    let Enrolled = document.getElementById("input-Enrolled").value
+    let Username = UserData.UserId;
 
-    let UniCity = document.getElementById("input-UniCity").value
-    let PrimeColor = document.getElementById("input-PrimeColor").value
-    let SecondColor = document.getElementById("input-SecondColor").value
-    let EmailDomain = document.getElementById("input-EmailDomain").value
-    let UniversityName = document.getElementById("input-UniversityName").value
-
-      
-
-    
     Axios.put('/updateUser', {
       Email: Email ? Email : null,
       Major: Major ? Major : null,
@@ -129,6 +155,7 @@ const Profile = () => {
       UserId: Username ? Username : null,
       YearEnrolled: Enrolled ? Enrolled : null
     });
+    console.log(Major)
 
     Axios.put('/updateUniversity',{
       UniCity:UniCity ? UniCity : null,
@@ -141,7 +168,7 @@ const Profile = () => {
 
     }
     getUserProfile();
-    input_disable.disabled = true;
+    setInputDisable(true);
   };
 
   return (
@@ -170,7 +197,6 @@ const Profile = () => {
               </p>
               <Button
                 color="info"
-                href="#pablo"
                 onClick={disableSetting}
               >
                 Edit profile
@@ -187,7 +213,7 @@ const Profile = () => {
               <Row className="justify-content-center">
                 <Col className="order-lg-2" lg="3">
                   <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                    <a onClick={(e) => e.preventDefault()}>
                       <img
                         alt = "Unable to load. Place a new picture URL in My Account"
                         className="rounded-circle"
@@ -203,7 +229,6 @@ const Profile = () => {
                   <Button
                     className="mr-4"
                     color="info"
-                    href="#pablo"
                     onClick={(e) => e.preventDefault()}
                     size="sm"
                   >
@@ -212,7 +237,6 @@ const Profile = () => {
                   <Button
                     className="float-right"
                     color="default"
-                    href="#pablo"
                     onClick={(e) => e.preventDefault()}
                     size="sm"
                   >
@@ -268,7 +292,7 @@ const Profile = () => {
                     Nick Murphy — writes, performs and records all of his own
                     music.
                   </p>
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  <a onClick={(e) => e.preventDefault()}>
                     Show more
                   </a> */}
                 </div>
@@ -285,7 +309,6 @@ const Profile = () => {
                   <Col className="text-right" xs="4">
                     <Button
                       color="primary"
-                      href="#pablo"
                       onClick={updateUser}
                       size="sm"
                     >
@@ -296,7 +319,7 @@ const Profile = () => {
               </CardHeader>
               <CardBody>
                 <Form>
-                  <fieldset id = "input_disable" disabled="disabled">
+                  <fieldset disabled= {InputDisable}>
                   <h6 className="heading-small text-muted mb-4">
                     User information
                   </h6>
@@ -335,6 +358,8 @@ const Profile = () => {
                             id="input-email"
                             placeholder="jesse@example.com"
                             type="email"
+                            // value = {Email}
+                            onChange = {EmailHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -355,6 +380,8 @@ const Profile = () => {
                             id="input-first-name"
                             placeholder="First name"
                             type="text"
+                            // value = {Firstname}
+                            onChange = {FirstnameHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -373,6 +400,8 @@ const Profile = () => {
                             id="input-last-name"
                             placeholder="Last name"
                             type="text"
+                            // value = {Lastname}
+                            onChange = {LastnameHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -401,6 +430,8 @@ const Profile = () => {
                             id="input-Picture"
                             placeholder="URL Link for Profile Picture"
                             type="text"
+                            // value = {Picture}
+                            onChange = {PictureHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -421,6 +452,8 @@ const Profile = () => {
                             id="input-Major"
                             placeholder="Enter Your Major"
                             type="text"
+                            // value = {Major}
+                            onChange = {MajorHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -440,6 +473,8 @@ const Profile = () => {
                             id="input-Enrolled"
                             placeholder="Put The Year You Enrolled"
                             type="text"
+                            // value = {Enrolled}
+                            onChange = {EnrolledHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -484,6 +519,8 @@ const Profile = () => {
                             id="input-UniCity"
                             placeholder="Univesity's City"
                             type="text"
+                            // value = {UniCity}
+                            onChange = {UniCityHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -503,6 +540,8 @@ const Profile = () => {
                             id="input-UniversityName"
                             placeholder="Put Your University Name"
                             type="text"
+                            // value = {UniversityName}
+                            onChange = {UniversityNameHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -522,6 +561,8 @@ const Profile = () => {
                             id="input-PrimeColor"
                             placeholder="Put Your University's Primary Color"
                             type="text"
+                            // value = {PrimeColor}
+                            onChange = {PrimeColorHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -540,6 +581,8 @@ const Profile = () => {
                             id="input-SecondColor"
                             placeholder="Put Your University's Secondary Color"
                             type="text"
+                            // value = {SecondColor}
+                            onChange = {SecondColorHandler}
                           />
                         </FormGroup>
                       </Col>
@@ -553,11 +596,13 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue= {UserData? UserData.emailDomain : ""}
+                            defaultValue= {UniData? UniData.emailDomain : ""}
                             // disabled = "disabled"
                             id="input-EmailDomain"
                             placeholder="ex: illinois.edu"
                             type="text"
+                            // value = {EmailDomain}
+                            onChange = {EmailDomainHandler}
                           />
                         </FormGroup>
                       </Col>
