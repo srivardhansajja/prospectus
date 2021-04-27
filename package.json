@@ -6,7 +6,8 @@
   "scripts": {
     "start": "NODE_ENV=prod nodemon src/index.js",
     "start-dev": "NODE_ENV=dev nodemon src/index.js",
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "deploy": "cd frontend && npm run build && cd .. && gcloud app deploy --stop-previous-version"
   },
   "keywords": [],
   "author": "",

@@ -15,8 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -30,18 +31,22 @@ import {
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
+
+import { Authorization } from '../index.js';
 // core components
 
-
 const Profile = () => {
-  
+  const history = useHistory();
+  const isAuthorized = useContext(Authorization)[0];
+
+  if (!isAuthorized) history.push('/auth/login');
+
   const [UserData, setUserData] = useState('');
   const [UniData, setUniData] = useState('');
   const [InputDisable, setInputDisable] = useState(true);
   // const [UniversityID, setUniversityID] = useState('');
 
-  
   const [Email, setEmail] = useState('');
   const [Firstname, setFirstname] = useState('');
   const [Lastname, setLastname] = useState('');
@@ -55,7 +60,6 @@ const Profile = () => {
   const [EmailDomain, setEmailDomain] = useState('');
   const [UniversityName, setUniversityName] = useState('');
 
-    
   useEffect(() => {
     getUserProfile();
   }, []);
@@ -69,103 +73,97 @@ const Profile = () => {
   //   const [info] = resp.data
   //   setUserData(info);
   // };
-  
+
   const getUserProfile = () => {
-      Axios.get('/user/profile', {
+    Axios.get('/user/profile', {
       withCredentials: true,
-    }).then(
-      (response) => {
-        setUserData(response.data[0]);
-        
-        console.log(response.data[0]);
-        // console.log(UserData[0].Name);
-      }
-    );
-  }
+    }).then((response) => {
+      setUserData(response.data[0]);
+
+      console.log(response.data[0]);
+      // console.log(UserData[0].Name);
+    });
+  };
 
   const disableSetting = () => {
     setInputDisable(!InputDisable);
-  }
+  };
 
   const unisearch = () => {
     Axios.get('/unisearch', {
-      params: {UniversityID: UserData ? UserData.UniversityID_u : 0},
+      params: { UniversityID: UserData ? UserData.UniversityID_u : 0 },
     }).then((response) => {
       setUniData(response.data[0]);
       console.log(response.data[0]);
     });
   };
 
-
   const EmailHandler = (e) => {
     setEmail(e.target.value);
-  }
+  };
 
   const MajorHandler = (e) => {
     setMajor(e.target.value);
-  }
+  };
 
   const FirstnameHandler = (e) => {
     setFirstname(e.target.value);
-  }
+  };
 
   const LastnameHandler = (e) => {
     setLastname(e.target.value);
-  }
+  };
 
   const PictureHandler = (e) => {
     setPicture(e.target.value);
-  }
+  };
 
   const EnrolledHandler = (e) => {
     setEnrolled(e.target.value);
-  }
+  };
 
   const UniCityHandler = (e) => {
     setUniCity(e.target.value);
-  }
+  };
 
   const PrimeColorHandler = (e) => {
     setPrimeColor(e.target.value);
-  }
+  };
 
   const SecondColorHandler = (e) => {
     setSecondColor(e.target.value);
-  }
+  };
 
   const EmailDomainHandler = (e) => {
     setEmailDomain(e.target.value);
-  }
+  };
 
   const UniversityNameHandler = (e) => {
     setUniversityName(e.target.value);
-  }
+  };
 
   const updateUser = () => {
+    if (!InputDisable) {
+      let Username = UserData.UserId;
 
-    if(!InputDisable)
-    {
-    let Username = UserData.UserId;
+      Axios.put('/updateUser', {
+        Email: Email ? Email : null,
+        Major: Major ? Major : null,
+        Name: Firstname + ' ' + Lastname,
+        Picture: Picture ? Picture : null,
+        UserId: Username ? Username : null,
+        YearEnrolled: Enrolled ? Enrolled : null,
+      });
+      console.log(Major);
 
-    Axios.put('/updateUser', {
-      Email: Email ? Email : null,
-      Major: Major ? Major : null,
-      Name: Firstname + ' ' + Lastname,
-      Picture: Picture ? Picture : null,
-      UserId: Username ? Username : null,
-      YearEnrolled: Enrolled ? Enrolled : null
-    });
-    console.log(Major)
-
-    Axios.put('/updateUniversity',{
-      UniCity:UniCity ? UniCity : null,
-      PrimeColor:PrimeColor ? PrimeColor: null,
-      SecondColor:SecondColor ? SecondColor : null,
-      EmailDomain:EmailDomain ? EmailDomain : null,
-      UniName: UniversityName ? UniversityName : null,
-      UniversityID: UniData.UniversityID ? UniData.UniversityID : null
-    });
-
+      Axios.put('/updateUniversity', {
+        UniCity: UniCity ? UniCity : null,
+        PrimeColor: PrimeColor ? PrimeColor : null,
+        SecondColor: SecondColor ? SecondColor : null,
+        EmailDomain: EmailDomain ? EmailDomain : null,
+        UniName: UniversityName ? UniversityName : null,
+        UniversityID: UniData.UniversityID ? UniData.UniversityID : null,
+      });
     }
     getUserProfile();
     setInputDisable(true);
@@ -177,11 +175,11 @@ const Profile = () => {
         className="header mt--8 pb-8 pt-5 pt-lg-6 d-flex align-items-center"
         style={{
           backgroundImage:
-            "url(" +
-            require("../assets/img/theme/profile-cover.jpg").default +
-            ")",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
+            'url(' +
+            require('../assets/img/theme/profile-cover.jpg').default +
+            ')',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
         }}
       >
         {/* Mask */}
@@ -190,15 +188,14 @@ const Profile = () => {
         <Container className="d-flex align-items-center" fluid>
           <Row>
             <Col lg="7" md="10">
-              <h1 className="display-2 text-white">{UserData ? UserData.Name : ""}</h1>
+              <h1 className="display-2 text-white">
+                {UserData ? UserData.Name : ''}
+              </h1>
               <p className="text-white mt-0 mb-5">
                 This is your profile page. You can see the progress you've made
                 with your work and manage your projects or assigned tasks
               </p>
-              <Button
-                color="info"
-                onClick={disableSetting}
-              >
+              <Button color="info" onClick={disableSetting}>
                 Edit profile
               </Button>
             </Col>
@@ -215,9 +212,9 @@ const Profile = () => {
                   <div className="card-profile-image">
                     <a onClick={(e) => e.preventDefault()}>
                       <img
-                        alt = "Unable to load. Place a new picture URL in My Account"
+                        alt="Unable to load. Place a new picture URL in My Account"
                         className="rounded-circle"
-                        src={UserData ? UserData.Picture : ""}
+                        src={UserData ? UserData.Picture : ''}
                         // src = "https://i.picsum.photos/id/0/5616/3744.jpg?hmac=3GAAioiQziMGEtLbfrdbcoenXoWAW-zlyEAMkfEdBzQ"
                       />
                     </a>
@@ -265,14 +262,18 @@ const Profile = () => {
                 </Row>
                 <div className="text-center">
                   <h3>
-                    {UserData ? UserData.Name : ""}
+                    {UserData ? UserData.Name : ''}
                     <br></br>
                   </h3>
                   <div className="h5 font-weight-300">
                     <i className="ni location_pin mr-2" />
-                    Class of {UserData.YearEnrolled ? UserData.YearEnrolled : "'Update Your Year Enrolled'"}
+                    Class of{' '}
+                    {UserData.YearEnrolled
+                      ? UserData.YearEnrolled
+                      : "'Update Your Year Enrolled'"}
                     <br></br>
-                    Major: {UserData.Major ? UserData.Major : "'Update Your Major'"}
+                    Major:{' '}
+                    {UserData.Major ? UserData.Major : "'Update Your Major'"}
                   </div>
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
@@ -280,11 +281,17 @@ const Profile = () => {
                   </div>
                   <div>
                     <i className="ni education_hat mr-2" />
-                    {UniData ? UniData.UniversityName : "'Update Your University Name'"}
+                    {UniData
+                      ? UniData.UniversityName
+                      : "'Update Your University Name'"}
                     <br></br>
-                    City: {UniData ? UniData.City : "'Update Your University City'"}
+                    City:{' '}
+                    {UniData ? UniData.City : "'Update Your University City'"}
                     <br></br>
-                    Primary Color: {UniData ? UniData.PrimaryColor : "'Update Your University's Primary Color'"}
+                    Primary Color:{' '}
+                    {UniData
+                      ? UniData.PrimaryColor
+                      : "'Update Your University's Primary Color'"}
                   </div>
                   {/* <hr className="my-4" /> */}
                   {/* <p>
@@ -307,11 +314,7 @@ const Profile = () => {
                     <h3 className="mb-0">My account</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    <Button
-                      color="primary"
-                      onClick={updateUser}
-                      size="sm"
-                    >
+                    <Button color="primary" onClick={updateUser} size="sm">
                       Submit Changes
                     </Button>
                   </Col>
@@ -319,166 +322,190 @@ const Profile = () => {
               </CardHeader>
               <CardBody>
                 <Form>
-                  <fieldset disabled= {InputDisable}>
-                  <h6 className="heading-small text-muted mb-4">
-                    User information
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-username"
-                          >
-                            UserID
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue={UserData.UserId ? UserData.UserId : ""}
-                            id="input-username"
-                            disabled = "disabled"
-                            placeholder="Username"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-email"
-                          >
-                            Email address
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue = {UserData.Email ? UserData.Email : ""}
-                            // disabled = "disabled"
-                            id="input-email"
-                            placeholder="jesse@example.com"
-                            type="email"
-                            // value = {Email}
-                            onChange = {EmailHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-first-name"
-                          >
-                            First name
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue={UserData.Name ? (UserData.Name).substr(0,(UserData.Name).indexOf(' ')) : ""}
-                            // disabled = "disabled"
-                            id="input-first-name"
-                            placeholder="First name"
-                            type="text"
-                            // value = {Firstname}
-                            onChange = {FirstnameHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-last-name"
-                          >
-                            Last name
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue={UserData.Name ? (UserData.Name).substr((UserData.Name).indexOf(' ')+1) : ""}
-                            // disabled = "disabled"
-                            id="input-last-name"
-                            placeholder="Last name"
-                            type="text"
-                            // value = {Lastname}
-                            onChange = {LastnameHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-
-                  <h6 className="heading-small text-muted mb-4">
-                    Profile Information
-                  </h6>
-                  <div className="pl-lg-4">
-
-                  <Row>
-                      <Col md="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-Picture"
-                          >
-                            Profile Picture Link
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UserData.Picture ? UserData.Picture : ""}
-                            // disabled = "disabled"
-                            id="input-Picture"
-                            placeholder="URL Link for Profile Picture"
-                            type="text"
-                            // value = {Picture}
-                            onChange = {PictureHandler}
-                          />
-                        </FormGroup>
-                      </Col>
+                  <fieldset disabled={InputDisable}>
+                    <h6 className="heading-small text-muted mb-4">
+                      User information
+                    </h6>
+                    <div className="pl-lg-4">
+                      <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-username"
+                            >
+                              UserID
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.UserId ? UserData.UserId : ''
+                              }
+                              id="input-username"
+                              disabled="disabled"
+                              placeholder="Username"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-email"
+                            >
+                              Email address
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.Email ? UserData.Email : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-email"
+                              placeholder="jesse@example.com"
+                              type="email"
+                              // value = {Email}
+                              onChange={EmailHandler}
+                            />
+                          </FormGroup>
+                        </Col>
                       </Row>
-                    <Row>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-Major"
-                          >
-                            Major
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UserData.Major ? UserData.Major : ""}
-                            // disabled = "disabled"
-                            id="input-Major"
-                            placeholder="Enter Your Major"
-                            type="text"
-                            // value = {Major}
-                            onChange = {MajorHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                    
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-Enrolled"
-                          >
-                            Year Enrolled
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UserData.YearEnrolled ? UserData.YearEnrolled : ""}
-                            // disabled = "disabled"
-                            id="input-Enrolled"
-                            placeholder="Put The Year You Enrolled"
-                            type="text"
-                            // value = {Enrolled}
-                            onChange = {EnrolledHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                      {/* <Col lg="4">
+                      <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              First name
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.Name
+                                  ? UserData.Name.substr(
+                                      0,
+                                      UserData.Name.indexOf(' ')
+                                    )
+                                  : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-first-name"
+                              placeholder="First name"
+                              type="text"
+                              // value = {Firstname}
+                              onChange={FirstnameHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-last-name"
+                            >
+                              Last name
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.Name
+                                  ? UserData.Name.substr(
+                                      UserData.Name.indexOf(' ') + 1
+                                    )
+                                  : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-last-name"
+                              placeholder="Last name"
+                              type="text"
+                              // value = {Lastname}
+                              onChange={LastnameHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                    </div>
+                    <hr className="my-4" />
+
+                    <h6 className="heading-small text-muted mb-4">
+                      Profile Information
+                    </h6>
+                    <div className="pl-lg-4">
+                      <Row>
+                        <Col md="12">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-Picture"
+                            >
+                              Profile Picture Link
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.Picture ? UserData.Picture : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-Picture"
+                              placeholder="URL Link for Profile Picture"
+                              type="text"
+                              // value = {Picture}
+                              onChange={PictureHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-Major"
+                            >
+                              Major
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.Major ? UserData.Major : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-Major"
+                              placeholder="Enter Your Major"
+                              type="text"
+                              // value = {Major}
+                              onChange={MajorHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-Enrolled"
+                            >
+                              Year Enrolled
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UserData.YearEnrolled
+                                  ? UserData.YearEnrolled
+                                  : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-Enrolled"
+                              placeholder="Put The Year You Enrolled"
+                              type="text"
+                              // value = {Enrolled}
+                              onChange={EnrolledHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                        {/* <Col lg="4">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -494,123 +521,126 @@ const Profile = () => {
                           />
                         </FormGroup>
                       </Col> */}
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
+                      </Row>
+                    </div>
+                    <hr className="my-4" />
 
-                  <h6 className="heading-small text-muted mb-4">
-                    University Information
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
+                    <h6 className="heading-small text-muted mb-4">
+                      University Information
+                    </h6>
+                    <div className="pl-lg-4">
+                      <Row>
+                        <Col md="12">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-UniCity"
+                            >
+                              University City
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={UniData ? UniData.City : ''}
+                              // disabled = "disabled"
+                              id="input-UniCity"
+                              placeholder="Univesity's City"
+                              type="text"
+                              // value = {UniCity}
+                              onChange={UniCityHandler}
+                            />
+                          </FormGroup>
+                        </Col>
 
-                    <Col md="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-UniCity"
-                          >
-                            University City
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UniData? UniData.City : ""}
-                            // disabled = "disabled"
-                            id="input-UniCity"
-                            placeholder="Univesity's City"
-                            type="text"
-                            // value = {UniCity}
-                            onChange = {UniCityHandler}
-                          />
-                        </FormGroup>
-                      </Col>
+                        <Col md="12">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-UniversityName"
+                            >
+                              University Name
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UniData ? UniData.UniversityName : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-UniversityName"
+                              placeholder="Put Your University Name"
+                              type="text"
+                              // value = {UniversityName}
+                              onChange={UniversityNameHandler}
+                            />
+                          </FormGroup>
+                        </Col>
 
-                      <Col md="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-UniversityName"
-                          >
-                            University Name
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UniData? UniData.UniversityName : ""}
-                            // disabled = "disabled"
-                            id="input-UniversityName"
-                            placeholder="Put Your University Name"
-                            type="text"
-                            // value = {UniversityName}
-                            onChange = {UniversityNameHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-PrimeColor"
-                          >
-                            Primary Color
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UniData? UniData.PrimaryColor : ""}
-                            // disabled = "disabled"
-                            id="input-PrimeColor"
-                            placeholder="Put Your University's Primary Color"
-                            type="text"
-                            // value = {PrimeColor}
-                            onChange = {PrimeColorHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-SecondColor"
-                          >
-                            Secondary Color
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UniData? UniData.SecondaryColor : ""}
-                            // disabled = "disabled"
-                            id="input-SecondColor"
-                            placeholder="Put Your University's Secondary Color"
-                            type="text"
-                            // value = {SecondColor}
-                            onChange = {SecondColorHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-EmailDomain"
-                          >
-                            Email Domain
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue= {UniData? UniData.emailDomain : ""}
-                            // disabled = "disabled"
-                            id="input-EmailDomain"
-                            placeholder="ex: illinois.edu"
-                            type="text"
-                            // value = {EmailDomain}
-                            onChange = {EmailDomainHandler}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  {/* Description */}
-                  {/* <h6 className="heading-small text-muted mb-4">About me</h6>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-PrimeColor"
+                            >
+                              Primary Color
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={UniData ? UniData.PrimaryColor : ''}
+                              // disabled = "disabled"
+                              id="input-PrimeColor"
+                              placeholder="Put Your University's Primary Color"
+                              type="text"
+                              // value = {PrimeColor}
+                              onChange={PrimeColorHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-SecondColor"
+                            >
+                              Secondary Color
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={
+                                UniData ? UniData.SecondaryColor : ''
+                              }
+                              // disabled = "disabled"
+                              id="input-SecondColor"
+                              placeholder="Put Your University's Secondary Color"
+                              type="text"
+                              // value = {SecondColor}
+                              onChange={SecondColorHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-EmailDomain"
+                            >
+                              Email Domain
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue={UniData ? UniData.emailDomain : ''}
+                              // disabled = "disabled"
+                              id="input-EmailDomain"
+                              placeholder="ex: illinois.edu"
+                              type="text"
+                              // value = {EmailDomain}
+                              onChange={EmailDomainHandler}
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                    </div>
+                    <hr className="my-4" />
+                    {/* Description */}
+                    {/* <h6 className="heading-small text-muted mb-4">About me</h6>
                   <div className="pl-lg-4">
                     <FormGroup>
                       <label>About Me</label>
@@ -624,7 +654,7 @@ const Profile = () => {
                       />
                     </FormGroup>
                   </div> */}
-                </fieldset>
+                  </fieldset>
                 </Form>
               </CardBody>
             </Card>
