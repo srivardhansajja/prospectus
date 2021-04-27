@@ -55,7 +55,6 @@ UNION (
 LIMIT 10
 `;
 
-
 const wishlistQuery = `
   SELECT CourseID_wish, Description 
   FROM Prospectus.Wishlist 
@@ -83,14 +82,19 @@ const wishlistUpdate = `
 `;
 
 const coursesTakenQuery = `
-  SELECT CourseID_ct 
-  FROM CoursesTaken 
-  WHERE UserID_ct = ?
+  SELECT ct.CourseID_ct, c.CourseName, c.CreditHours  
+  FROM CoursesTaken ct JOIN Courses c ON ct.CourseID_ct = c.CourseID
+  WHERE ct.UserID_ct = ?
 `;
 
 const coursesTakenInsert = `
   INSERT INTO CoursesTaken(UserID_ct, CourseID_ct)
   VALUE (?, ?)
+`;
+
+const coursesTakenDelete = `
+  DELETE FROM CoursesTaken 
+  WHERE UserID_ct = ? AND CourseID_ct = ?
 `;
 
 const relevantCoursesQuery = `
@@ -134,6 +138,7 @@ module.exports = {
   wishlistUpdate,
   wishlistDelete,
   coursesTakenQuery,
+  coursesTakenDelete,
   relevantCoursesQuery,
   courseDescQuery,
   coursesTakenInsert,

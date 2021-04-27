@@ -23,10 +23,10 @@ import Chart from 'chart.js';
 // react plugin used to create charts
 import { Line, Bar } from 'react-chartjs-2';
 // reactstrap components
-import Wishlist from 'components/Wishlist';
-// wishlist
-import RelevantCourses from 'components/RelevantCourses.jsx';
-// relevant course
+import CoursesTaken from 'components/CoursesTaken.jsx';
+
+import Wishlist from 'components/Wishlist.jsx';
+
 import {
   Card,
   CardHeader,
@@ -95,110 +95,69 @@ const Dashboard = (props) => {
                   </CardBody>
                 </Card>
               </Col>
-              <Wishlist page="dashboard"/>;
+              <Wishlist page="dashboard" />;
             </Row>
 
             <Row className="mt-5">
-              <Col>
-                <RelevantCourses page="dashboard"/>
-              </Col>
-              <Col xl="4">
+              <Col className="mb-5 mb-xl-0" xl="7">
                 <Card className="shadow">
                   <CardHeader className="border-0">
                     <Row className="align-items-center">
                       <div className="col">
-                        <h3 className="mb-0">Courses Taken</h3>
+                        <h3 className="mb-0">Recommended Courses</h3>
                       </div>
                     </Row>
                   </CardHeader>
-                  <Table className="align-items-center table-flush" responsive>
+                  <Table
+                    style={{ height: 20 }}
+                    className="align-items-center table-flush"
+                    responsive
+                  >
                     <thead className="thead-light">
                       <tr>
-                        <th scope="col">Referral</th>
-                        <th scope="col">Visitors</th>
-                        <th scope="col" />
+                        <th scope="col">Course ID</th>
+                        <th scope="col">Course Name</th>
+                        <th scope="col">Credit Hours</th>
+                        <th scope="col">Average GPA</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <th scope="row">Facebook</th>
-                        <td>1,480</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">60%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="60"
-                                barClassName="bg-gradient-danger"
-                              />
-                            </div>
-                          </div>
-                        </td>
+                        <th scope="row">CS 498</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                       </tr>
                       <tr>
-                        <th scope="row">Facebook</th>
-                        <td>5,480</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">70%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="70"
-                                barClassName="bg-gradient-success"
-                              />
-                            </div>
-                          </div>
-                        </td>
+                        <th scope="row">ME 180</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                       </tr>
                       <tr>
-                        <th scope="row">Google</th>
-                        <td>4,807</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">80%</span>
-                            <div>
-                              <Progress max="100" value="80" />
-                            </div>
-                          </div>
-                        </td>
+                        <th scope="row">CS 242</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                       </tr>
                       <tr>
-                        <th scope="row">Instagram</th>
-                        <td>3,678</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">75%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="75"
-                                barClassName="bg-gradient-info"
-                              />
-                            </div>
-                          </div>
-                        </td>
+                        <th scope="row">ECE 374</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                       </tr>
                       <tr>
-                        <th scope="row">twitter</th>
-                        <td>2,645</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <span className="mr-2">30%</span>
-                            <div>
-                              <Progress
-                                max="100"
-                                value="30"
-                                barClassName="bg-gradient-warning"
-                              />
-                            </div>
-                          </div>
-                        </td>
+                        <th scope="row">ECE 445</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                       </tr>
                     </tbody>
                   </Table>
                 </Card>
+              </Col>
+              <Col className="mb-5 mb-xl-0">
+                <CoursesTaken />
               </Col>
             </Row>
           </Col>
