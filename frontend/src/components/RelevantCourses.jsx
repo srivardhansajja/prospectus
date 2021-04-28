@@ -16,9 +16,9 @@ import {
 
 const RelevantCourses = (props) => {
   const [relCoursesList, setRelCoursesList] = useState([]);
-  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
+  const isAuthorized = useContext(Authorization)[0];
 
-  const getRelCourses = () => {
+  const getRelCourses = async () => {
     if (isAuthorized)
       Axios.get('/user/relevantcourses', {
         withCredentials: true,
@@ -39,10 +39,12 @@ const RelevantCourses = (props) => {
 
   useEffect(() => {
     getRelCourses();
+    // eslint-disable-next-line
   }, []);
 
-  if (props.page == 'dashboard') {
-    var listsElements = relCoursesList.map((course) => (
+  let listsElements = null;
+  if (props.page === 'dashboard') {
+    listsElements = relCoursesList.map((course) => (
       <RelevantCoursesItem
         key={course}
         page="dashboard"
@@ -51,8 +53,8 @@ const RelevantCourses = (props) => {
         averageGPA={course[2]}
       ></RelevantCoursesItem>
     ));
-  } else if (props.page == 'explore') {
-    var listsElements = relCoursesList.map((course) => (
+  } else if (props.page === 'explore') {
+    listsElements = relCoursesList.map((course) => (
       <RelevantCoursesItem
         key={course}
         page="explore"
@@ -63,14 +65,14 @@ const RelevantCourses = (props) => {
     ));
   }
 
-  if (props.page == 'dashboard') {
+  if (props.page === 'dashboard') {
     return (
       <Col xl="13">
         <Card className="shadow">
           <CardHeader className="border-0">
             <Row className="align-items-center">
               <div className="col">
-                <h3 className="mb-0">Relevant Courses</h3>
+                <h3 className="mb-0">Recommended Courses</h3>
               </div>
               <div className="col text-right">
                 <Button color="info" onClick={getRelCourses} size="sm">
@@ -100,14 +102,14 @@ const RelevantCourses = (props) => {
         </Card>
       </Col>
     );
-  } else if (props.page == 'explore') {
+  } else if (props.page === 'explore') {
     return (
       <Col xl="5">
         <Card className="shadow">
           <CardHeader className="border-0">
             <Row className="align-items-center">
               <div className="col">
-                <h3 className="mb-0">Relevant Courses</h3>
+                <h3 className="mb-0">Recommended Courses</h3>
               </div>
               <div className="col text-right">
                 <Button color="info" onClick={getRelCourses} size="sm">

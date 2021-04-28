@@ -45,8 +45,6 @@ const ProspectusNavbar = (props) => {
             backgroundColor: 'black',
             borderRadius: '10px',
           }}
-          // to="/auth/login"
-          // tag={Link}
         >
           &nbsp; PROSPECTUS &nbsp;
         </NavbarBrand>
@@ -81,11 +79,11 @@ const ProspectusNavbar = (props) => {
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
               <span className="avatar avatar-sm rounded-circle">
-              <img
-                        alt="Unable to load. Place a new picture URL in My Account"
-                        src={profPic}
-                        onError={addDefaultSrc}
-              />
+                <img
+                  alt="Unable to load. Place a new URL in My Account"
+                  src={profPic}
+                  onError={addDefaultSrc}
+                />
               </span>
             </DropdownToggle>
             <DropdownMenu right>

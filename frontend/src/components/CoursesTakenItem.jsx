@@ -1,18 +1,13 @@
 import React from 'react';
 import Axios from 'axios';
 
-
 const CoursesTakenItem = (props) => {
-  const username = 'ajackson1';
-  
   const DeleteCourseFromCoursesTaken = (courseid) => {
-    console.log(username, courseid);
     Axios.delete('/user/coursesTaken', {
       withCredentials: true,
-      params: { userid: username, courseid: courseid },
+      params: { courseid: courseid },
     }).then(
       (response) => {
-        console.log(response.data);
         props.onChange();
       },
       (error) => {
@@ -28,13 +23,13 @@ const CoursesTakenItem = (props) => {
         <td>{props.credithours}</td>
         <td>
           <button
-              value={props.courseid}
-              type="button"
-              onClick={(e) => DeleteCourseFromCoursesTaken(e.target.value)}
-              className="btn btn-sm btn-danger"
+            value={props.courseid}
+            type="button"
+            onClick={(e) => DeleteCourseFromCoursesTaken(e.target.value)}
+            className="btn btn-sm btn-danger"
           >
             Delete
-          </button>    
+          </button>
         </td>
       </tr>
     </>

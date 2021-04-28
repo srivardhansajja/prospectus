@@ -11,10 +11,10 @@ const connection = mysql.createConnection({
 
 connection.connect((err) => {
   if (err) {
-    console.error(`Error connecting: ${err.stack}`);
-    return;
+    // console.error(`Error connecting: ${err.stack}`);
+    // return;
   }
-  console.log(`Connected to DB as thread id: ${connection.threadId}`);
+  // console.log(`Connected to DB as thread id: ${connection.threadId}`);
 });
 
 module.exports = connection;

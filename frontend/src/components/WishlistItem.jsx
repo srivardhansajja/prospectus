@@ -17,8 +17,6 @@ function truncate(str, n) {
 }
 
 const WishlistItem = (props) => {
-  const username = 'ajackson1';
-
   const [courseDesc, setCourseDesc] = useState('');
   const [modalUpdate, setModalUpdate] = useState(false);
   const [modalPlanner, setModalPlanner] = useState(false);
@@ -27,13 +25,11 @@ const WishlistItem = (props) => {
   const togglePlanner = () => setModalPlanner(!modalPlanner);
 
   const DeleteCourseFromWishlist = (courseid) => {
-    console.log(username, courseid);
     Axios.delete('/user/wishlist', {
       withCredentials: true,
-      params: { userid: username, courseid: courseid },
+      params: { courseid: courseid },
     }).then(
       (response) => {
-        console.log(response.data);
         props.onChange();
       },
       (error) => {
@@ -44,7 +40,6 @@ const WishlistItem = (props) => {
 
   const AddCoursetoCoursesPlanner = (courseid, semester) => {
     togglePlanner();
-    console.log(courseid, semester);
     Axios.post(
       '/user/coursesPlanner',
       {
@@ -69,18 +64,15 @@ const WishlistItem = (props) => {
 
   const UpdateCourseInWishlist = () => {
     toggleUpdate();
-    console.log(username, props.courseid, courseDesc);
     Axios.post(
       '/user/wishlist/update',
       {
-        userid: username,
         courseid: props.courseid,
         desc: courseDesc,
       },
       { withCredentials: true }
     ).then(
       (response) => {
-        console.log(response.data);
         props.onChange();
       },
       (error) => {
@@ -90,13 +82,14 @@ const WishlistItem = (props) => {
   };
 
   var truncateValue;
-  if (props.page == 'dashboard') {
+  if (props.page === 'dashboard') {
     truncateValue = 50;
-  } else if (props.page == 'explore') {
+  } else if (props.page === 'explore') {
     truncateValue = 20;
   }
-  if (props.page == 'dashboard') {
-    var addButton = (
+  let addButton = <></>;
+  if (props.page === 'dashboard') {
+    addButton = (
       <button
         value={props.courseid}
         type="button"
@@ -106,8 +99,6 @@ const WishlistItem = (props) => {
         + Planner
       </button>
     );
-  } else {
-    var addButton = <></>;
   }
   return (
     <>

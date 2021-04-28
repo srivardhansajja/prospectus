@@ -18,11 +18,7 @@
 import React, { useState, useContext } from 'react';
 
 import { useHistory } from 'react-router-dom';
-// javascipt plugin for creating charts
-import Chart from 'chart.js';
-// react plugin used to create charts
-import { Line, Bar } from 'react-chartjs-2';
-// reactstrap components
+
 import Wishlist from 'components/Wishlist';
 // wishlist
 import RelevantCourses from 'components/RelevantCourses.jsx';
@@ -30,16 +26,7 @@ import RelevantCourses from 'components/RelevantCourses.jsx';
 import CoursesPlanner from 'components/CoursesPlanner.jsx';
 import CoursesTaken from 'components/CoursesTaken.jsx';
 
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Progress,
-  Table,
-  Container,
-  Row,
-  Col,
-} from 'reactstrap';
+import { Card, CardHeader, Container, Row, Col } from 'reactstrap';
 
 import { Authorization } from '../index.js';
 
@@ -62,7 +49,7 @@ const Dashboard = (props) => {
                   <CardHeader className="bg-transparent">
                     <Row className="align-items-center">
                       <div className="col">
-                        <h2 className="text-white mb-0">Course Planner</h2>
+                        <h2 className="text-white mb-0">Planner</h2>
                       </div>
                     </Row>
                   </CardHeader>

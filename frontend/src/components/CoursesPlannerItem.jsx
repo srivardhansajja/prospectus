@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Axios from 'axios';
 
 function truncate(str, n) {
@@ -16,16 +16,12 @@ const CoursesPlannerItem = ({
   semester,
   onChange,
 }) => {
-  const username = 'ajackson1';
-
   const DeleteCourseFromCoursesPlanner = (courseid, semester) => {
-    console.log(username, courseid, semester);
     Axios.delete('/user/coursesPlanner', {
       withCredentials: true,
-      params: { userid: username, courseid: courseid, semester: semester },
+      params: { courseid: courseid, semester: semester },
     }).then(
       (response) => {
-        console.log(response.data);
         onChange();
       },
       (error) => {
@@ -38,7 +34,7 @@ const CoursesPlannerItem = ({
     <>
       <tr>
         <th scope="row">{courseid}</th>
-        <td>{truncate(coursename, 30)}</td>
+        <td>{truncate(coursename, 28)}</td>
         <td>{trimCreditHours(credithours)}</td>
         <td>
           <button

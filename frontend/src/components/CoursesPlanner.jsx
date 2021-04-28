@@ -8,16 +8,14 @@ import { Card, CardHeader, CardBody, Row, Table, Col } from 'reactstrap';
 import { data } from 'jquery';
 
 const CoursesPlanner = ({ semester, refresh }) => {
-  const username = 'ajackson1';
-
   const [CoursesPlannerList, setCoursesPlannerList] = useState([]);
-  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
+  const isAuthorized = useContext(Authorization)[0];
 
   const getCoursesPlanner = () => {
     if (isAuthorized) {
       Axios.get('/user/coursesPlanner', {
         withCredentials: true,
-        params: { userid: username, semester: semester },
+        params: { semester: semester },
       }).then(
         (response) => {
           var names = response.data.data.map(function (item) {
@@ -40,10 +38,12 @@ const CoursesPlanner = ({ semester, refresh }) => {
 
   useEffect(() => {
     getCoursesPlanner();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     getCoursesPlanner();
+    // eslint-disable-next-line
   }, [refresh.refresh[0]]);
 
   var listsElements = CoursesPlannerList.map((course) => (

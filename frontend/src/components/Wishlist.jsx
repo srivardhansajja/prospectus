@@ -25,7 +25,7 @@ const Wishlist = (props) => {
   var searchBarText = '';
 
   const [wishlistList, setWishlistList] = useState([]);
-  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
+  const isAuthorized = useContext(Authorization)[0];
 
   const setSearchBarText = (text) => {
     searchBarText = text;
@@ -59,6 +59,7 @@ const Wishlist = (props) => {
 
   useEffect(() => {
     getWishlist();
+    // eslint-disable-next-line
   }, [props.refresh]);
 
   let styles = {
@@ -67,8 +68,9 @@ const Wishlist = (props) => {
     height: 360,
   };
 
-  if (props.page == 'dashboard') {
-    var listsElements = wishlistList.map((course) => (
+  let listsElements = null;
+  if (props.page === 'dashboard') {
+    listsElements = wishlistList.map((course) => (
       <WishlistItem
         page="dashboard"
         key={course}
@@ -79,8 +81,8 @@ const Wishlist = (props) => {
       ></WishlistItem>
     ));
     styles.height = 350;
-  } else if (props.page == 'explore') {
-    var listsElements = wishlistList.map((course) => (
+  } else if (props.page === 'explore') {
+    listsElements = wishlistList.map((course) => (
       <WishlistItem
         page="explore"
         key={course}
@@ -97,7 +99,7 @@ const Wishlist = (props) => {
         <CardHeader className="bg-transparent">
           <Row className="align-items-center">
             <div className="col">
-              <h2 className="mb-0">Courses Wishlist</h2>
+              <h2 className="mb-0">Wishlist</h2>
             </div>
             <div className="form col text-right">
               <Button color="info" onClick={getWishlist} size="sm">

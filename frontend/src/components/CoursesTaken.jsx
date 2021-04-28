@@ -9,7 +9,7 @@ import { data } from 'jquery';
 
 const CoursesTaken = () => {
   const [CoursesTakenList, setCoursesTakenList] = useState([]);
-  const [isAuthorized, setIsAuthorized] = useContext(Authorization);
+  const isAuthorized = useContext(Authorization)[0];
 
   const getCoursesTaken = () => {
     if (isAuthorized) {
@@ -38,6 +38,7 @@ const CoursesTaken = () => {
 
   useEffect(() => {
     getCoursesTaken();
+    // eslint-disable-next-line
   }, []);
 
   var listsElements = CoursesTakenList.map((course) => (
