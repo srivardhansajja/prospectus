@@ -57,7 +57,7 @@ const Profile = () => {
   const [EmailDomain, setEmailDomain] = useState('');
   const [UniversityName, setUniversityName] = useState('');
 
-  const [submitButton, setSubmitButton] = useState(null);
+  // const [submitButton, setSubmitButton] = useState(null);
 
   useEffect(() => {
     getUserProfile();
@@ -94,11 +94,9 @@ const Profile = () => {
   };
 
   const disableSetting = () => {
-    setSubmitButton(
-      <Button color="primary" onClick={updateUser} size="sm">
-        Submit Changes
-      </Button>
-    );
+    // setSubmitButton(
+      
+    // );
     setInputDisable(!InputDisable);
   };
 
@@ -172,7 +170,7 @@ const Profile = () => {
     }
     getUserProfile();
     setInputDisable(true);
-    setSubmitButton(null);
+    // setSubmitButton(null);
   };
 
   const addDefaultSrc = (ev) => {
@@ -287,10 +285,9 @@ const Profile = () => {
                     <h3 className="mb-0">My account</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    {submitButton}
-                    {/* <Button color="primary" onClick={updateUser} size="sm">
+                    <Button color="primary" disabled = {InputDisable} onClick={updateUser} size="sm">
                       Submit Changes
-                    </Button> */}
+                    </Button>
                   </Col>
                 </Row>
               </CardHeader>
