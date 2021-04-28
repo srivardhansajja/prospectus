@@ -34,7 +34,6 @@ import {
 } from 'reactstrap';
 
 import { Authorization } from '../index.js';
-// core components
 
 const Profile = () => {
   const history = useHistory();
@@ -45,7 +44,6 @@ const Profile = () => {
   const [UserData, setUserData] = useState('');
   const [UniData, setUniData] = useState('');
   const [InputDisable, setInputDisable] = useState(true);
-  // const [UniversityID, setUniversityID] = useState('');
 
   const [Firstname, setFirstname] = useState('');
   const [Lastname, setLastname] = useState('');
@@ -58,6 +56,8 @@ const Profile = () => {
   const [SecondColor, setSecondColor] = useState('');
   const [EmailDomain, setEmailDomain] = useState('');
   const [UniversityName, setUniversityName] = useState('');
+
+  const [submitButton, setSubmitButton] = useState(null);
 
   useEffect(() => {
     getUserProfile();
@@ -74,6 +74,7 @@ const Profile = () => {
     );
     setPicture(UserData ? UserData.Picture : '');
     setEnrolled(UserData.YearEnrolled ? UserData.YearEnrolled : '');
+    // eslint-disable-next-line
   }, [UserData]);
 
   useEffect(() => {
@@ -84,24 +85,20 @@ const Profile = () => {
     setUniCity(UniData ? UniData.City : '');
   }, [UniData]);
 
-  // const getUserProfile = async () => {
-  //   const resp = await axios.get('/user/profile', { withCredentials: true });
-  //   const [info] = resp.data
-  //   setUserData(info);
-  // };
-
   const getUserProfile = () => {
     Axios.get('/user/profile', {
       withCredentials: true,
     }).then((response) => {
       setUserData(response.data[0]);
-
-      console.log(response.data[0]);
-      // console.log(UserData[0].Name);
     });
   };
 
   const disableSetting = () => {
+    setSubmitButton(
+      <Button color="primary" onClick={updateUser} size="sm">
+        Submit Changes
+      </Button>
+    );
     setInputDisable(!InputDisable);
   };
 
@@ -110,7 +107,6 @@ const Profile = () => {
       params: { UniversityID: UserData ? UserData.UniversityID_u : 0 },
     }).then((response) => {
       setUniData(response.data[0]);
-      console.log(response.data[0]);
     });
   };
 
@@ -157,10 +153,6 @@ const Profile = () => {
   const updateUser = () => {
     if (!InputDisable) {
       let Username = UserData.UserId;
-      console.log(Major);
-      console.log(Firstname);
-      console.log(Picture);
-      console.log(Enrolled);
 
       Axios.put('/updateUser', {
         Major: Major ? Major : null,
@@ -180,6 +172,7 @@ const Profile = () => {
     }
     getUserProfile();
     setInputDisable(true);
+    setSubmitButton(null);
   };
 
   const addDefaultSrc = (ev) => {
@@ -227,54 +220,25 @@ const Profile = () => {
               <Row className="justify-content-center">
                 <Col className="order-lg-2" lg="3">
                   <div className="card-profile-image">
-                    <a onClick={(e) => e.preventDefault()}>
-                      <img
-                        alt="Unable to load. Place a new picture URL in My Account"
-                        className="rounded-circle"
-                        src={UserData ? UserData.Picture : ''}
-                        // src = {"google.com"}
-                        onError={addDefaultSrc}
-                      />
-                    </a>
+                    {/* <a onClick={(e) => e.preventDefault()}> */}
+                    <img
+                      alt="Unable to load. Place a new URL in My Account"
+                      className="rounded-circle"
+                      src={UserData ? UserData.Picture : ''}
+                      // src = {"google.com"}
+                      onError={addDefaultSrc}
+                    />
+                    {/* </a> */}
                   </div>
                 </Col>
               </Row>
-              {/* <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button
-                    className="mr-4"
-                    color="info"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Connect
-                  </Button>
-                  <Button
-                    className="float-right"
-                    color="default"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Message
-                  </Button>
-                </div>
-              </CardHeader> */}
               <CardBody className="pt-0 pt-md-4">
                 <Row>
                   <div className="col">
                     <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div>
-                        {/* <span className="heading">22</span>
-                        <span className="description">Friends</span> */}
-                      </div>
-                      <div>
-                        {/* <span className="heading">10</span>
-                        <span className="description">Photos</span> */}
-                      </div>
-                      <div>
-                        {/* <span className="heading">89</span>
-                        <span className="description">Comments</span> */}
-                      </div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
                 </Row>
@@ -311,15 +275,6 @@ const Profile = () => {
                       ? UniData.PrimaryColor
                       : "'Update Your University's Primary Color'"}
                   </div>
-                  {/* <hr className="my-4" /> */}
-                  {/* <p>
-                    Ryan — the name taken by Melbourne-raised, Brooklyn-based
-                    Nick Murphy — writes, performs and records all of his own
-                    music.
-                  </p>
-                  <a onClick={(e) => e.preventDefault()}>
-                    Show more
-                  </a> */}
                 </div>
               </CardBody>
             </Card>
@@ -332,9 +287,10 @@ const Profile = () => {
                     <h3 className="mb-0">My account</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    <Button color="primary" onClick={updateUser} size="sm">
+                    {submitButton}
+                    {/* <Button color="primary" onClick={updateUser} size="sm">
                       Submit Changes
-                    </Button>
+                    </Button> */}
                   </Col>
                 </Row>
               </CardHeader>
@@ -383,8 +339,6 @@ const Profile = () => {
                               id="input-email"
                               placeholder="jesse@example.com"
                               type="email"
-                              // value = {Email}
-                              // onChange = {EmailHandler}
                             />
                           </FormGroup>
                         </Col>
@@ -408,11 +362,9 @@ const Profile = () => {
                                     )
                                   : ''
                               }
-                              // disabled = "disabled"
                               id="input-first-name"
                               placeholder="First name"
                               type="text"
-                              // value = {Firstname}
                               onChange={FirstnameHandler}
                             />
                           </FormGroup>
@@ -434,11 +386,9 @@ const Profile = () => {
                                     )
                                   : ''
                               }
-                              // disabled = "disabled"
                               id="input-last-name"
                               placeholder="Last name"
                               type="text"
-                              // value = {Lastname}
                               onChange={LastnameHandler}
                             />
                           </FormGroup>
@@ -465,7 +415,6 @@ const Profile = () => {
                               defaultValue={
                                 UserData.Picture ? UserData.Picture : ''
                               }
-                              // disabled = "disabled"
                               id="input-Picture"
                               placeholder="URL Link for Profile Picture"
                               type="text"
@@ -489,11 +438,9 @@ const Profile = () => {
                               defaultValue={
                                 UserData.Major ? UserData.Major : ''
                               }
-                              // disabled = "disabled"
                               id="input-Major"
                               placeholder="Enter Your Major"
                               type="text"
-                              // value = {Major}
                               onChange={MajorHandler}
                             />
                           </FormGroup>
@@ -514,31 +461,13 @@ const Profile = () => {
                                   ? UserData.YearEnrolled
                                   : ''
                               }
-                              // disabled = "disabled"
                               id="input-Enrolled"
                               placeholder="Put The Year You Enrolled"
                               type="text"
-                              // value = {Enrolled}
                               onChange={EnrolledHandler}
                             />
                           </FormGroup>
                         </Col>
-                        {/* <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Postal code
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-postal-code"
-                            placeholder="Postal code"
-                            type="number"
-                          />
-                        </FormGroup>
-                      </Col> */}
                       </Row>
                     </div>
                     <hr className="my-4" />
@@ -559,11 +488,9 @@ const Profile = () => {
                             <Input
                               className="form-control-alternative"
                               defaultValue={UniData ? UniData.City : ''}
-                              // disabled = "disabled"
                               id="input-UniCity"
                               placeholder="Univesity's City"
                               type="text"
-                              // value = {UniCity}
                               onChange={UniCityHandler}
                             />
                           </FormGroup>
@@ -582,11 +509,9 @@ const Profile = () => {
                               defaultValue={
                                 UniData ? UniData.UniversityName : ''
                               }
-                              // disabled = "disabled"
                               id="input-UniversityName"
                               placeholder="Put Your University Name"
                               type="text"
-                              // value = {UniversityName}
                               onChange={UniversityNameHandler}
                             />
                           </FormGroup>
@@ -603,11 +528,9 @@ const Profile = () => {
                             <Input
                               className="form-control-alternative"
                               defaultValue={UniData ? UniData.PrimaryColor : ''}
-                              // disabled = "disabled"
                               id="input-PrimeColor"
                               placeholder="Put Your University's Primary Color"
                               type="text"
-                              // value = {PrimeColor}
                               onChange={PrimeColorHandler}
                             />
                           </FormGroup>
@@ -625,11 +548,9 @@ const Profile = () => {
                               defaultValue={
                                 UniData ? UniData.SecondaryColor : ''
                               }
-                              // disabled = "disabled"
                               id="input-SecondColor"
                               placeholder="Put Your University's Secondary Color"
                               type="text"
-                              // value = {SecondColor}
                               onChange={SecondColorHandler}
                             />
                           </FormGroup>
@@ -645,11 +566,9 @@ const Profile = () => {
                             <Input
                               className="form-control-alternative"
                               defaultValue={UniData ? UniData.emailDomain : ''}
-                              // disabled = "disabled"
                               id="input-EmailDomain"
                               placeholder="ex: illinois.edu"
                               type="text"
-                              // value = {EmailDomain}
                               onChange={EmailDomainHandler}
                             />
                           </FormGroup>
@@ -657,21 +576,6 @@ const Profile = () => {
                       </Row>
                     </div>
                     <hr className="my-4" />
-                    {/* Description */}
-                    {/* <h6 className="heading-small text-muted mb-4">About me</h6>
-                  <div className="pl-lg-4">
-                    <FormGroup>
-                      <label>About Me</label>
-                      <Input
-                        className="form-control-alternative"
-                        placeholder="A few words about you ..."
-                        rows="4"
-                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                        Open Source."
-                        type="textarea"
-                      />
-                    </FormGroup>
-                  </div> */}
                   </fieldset>
                 </Form>
               </CardBody>

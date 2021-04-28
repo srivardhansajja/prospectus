@@ -15,7 +15,10 @@
     "build:scss": "npm run compile:scss && npm run minify:scss && npm run map:scss"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "react-hooks/exhaustive-deps": "warn"
+    }
   },
   "browserslist": [
     ">0.2%",

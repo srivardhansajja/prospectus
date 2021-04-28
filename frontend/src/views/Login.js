@@ -24,7 +24,7 @@ import { Link } from 'react-router-dom';
 import { Authorization } from '../index.js';
 
 // reactstrap components
-import { Button, Card, CardHeader, Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
 
 const Login = () => {
   const [userData, setUserData] = useState();

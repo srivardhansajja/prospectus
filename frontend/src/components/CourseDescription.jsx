@@ -6,10 +6,6 @@ import { Badge, Card, CardBody, Col } from 'reactstrap';
 const CourseDescription = (props) => {
   const [description, setDescription] = useState(null);
 
-  useEffect(() => {
-    getDescription();
-  }, [props.courseid]);
-
   const AddCourseToWishlist = (courseid) => {
     Axios.post(
       '/user/wishlist',
@@ -71,10 +67,7 @@ const CourseDescription = (props) => {
         names = names[0];
 
         if (response.data.length > 0) {
-          console.log(response.data);
-          console.log(names);
           setDescription(names);
-          console.log(description);
         }
       },
       (error) => {
@@ -83,7 +76,12 @@ const CourseDescription = (props) => {
     );
   }
 
-  var desc;
+  useEffect(() => {
+    getDescription();
+    // eslint-disable-next-line
+  }, [props.courseid]);
+
+  let desc;
   if (!description) {
     desc = (
       <CardBody style={{ textAlign: 'center', marginTop: 100 }}>
@@ -93,7 +91,7 @@ const CourseDescription = (props) => {
   } else {
     let avgGpa = 'Not Available for this class';
 
-    if (description[0] != 0) {
+    if (description[0] !== 0) {
       avgGpa = description[0].toFixed(2).toString();
     }
 

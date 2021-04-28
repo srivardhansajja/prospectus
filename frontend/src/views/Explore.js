@@ -62,7 +62,6 @@ const Explore = () => {
       const resp = await Axios.get('/search', {
         params: { q: q.toLowerCase() },
       });
-      console.log(resp.data);
       setResultsList(resp.data);
     };
     getSearchResults(searchTerm);

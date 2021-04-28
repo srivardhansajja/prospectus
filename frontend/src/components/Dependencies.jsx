@@ -76,7 +76,6 @@ const Dependencies = (props) => {
         edges,
       },
     };
-    console.log(result);
     setCourseGraph(result);
   };
 

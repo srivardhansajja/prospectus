@@ -35,6 +35,7 @@ function authUser(req, res, next) {
     req.user = data.id;
 
     next();
+    return null;
   });
 }
 
@@ -45,11 +46,12 @@ app.post('/login', async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
 
-  const { hd, email, name, picture, sub } = ticket.getPayload();
+  const {
+    hd, email, name, picture, sub,
+  } = ticket.getPayload();
 
-  const query =
-    'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
-  connection.query(query, [sub, name, email, picture, hd], (err, data) => {
+  const query = 'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
+  connection.query(query, [sub, name, email, picture, hd], (err) => {
     if (err) res.sendStatus(500);
     // 6 hours
     const token = jwt.sign({ id: sub }, process.env.TOKEN_SECRET, {
@@ -73,7 +75,7 @@ app.get('/search', authUser, (req, res) => {
     (err, data) => {
       if (err) throw err;
       res.json(data);
-    }
+    },
   );
 });
 
@@ -85,7 +87,7 @@ app.get('/user/profile', authUser, (req, res) => {
       if (err) throw err;
 
       res.json(data);
-    }
+    },
   );
 });
 
@@ -99,7 +101,6 @@ app.get('/unisearch', (req, res) => {
 });
 
 app.get('/user/profile', authUser, (req, res) => {
-  console.log('hi');
   connection.query(
     'SELECT * From Users WHERE UserId = ?',
     [req.user],
@@ -107,7 +108,7 @@ app.get('/user/profile', authUser, (req, res) => {
       if (err) throw err;
 
       res.json(data);
-    }
+    },
   );
 });
 
@@ -151,63 +152,48 @@ app.post('/user/wishlist', authUser, (req, res) => {
 });
 
 app.put('/updateUser', (req, res) => {
-  const Major = req.body.Major;
-  const Name = req.body.Name;
-  const Picture = req.body.Picture;
-  const YearEnrolled = req.body.YearEnrolled;
-  const UserId = req.body.UserId;
+  const { Major } = req.body;
+  const { Name } = req.body;
+  const { Picture } = req.body;
+  const { YearEnrolled } = req.body;
+  const { UserId } = req.body;
 
-  console.log(Major);
-  console.log(Name);
-  console.log(Picture);
-  console.log(YearEnrolled);
-  console.log(UserId);
-
-  const sqlUpdate =
-    'UPDATE `Users` SET `Major` = ?, `Name` = ?, `Picture` = ?, `YearEnrolled` = ? WHERE `UserId` = ?;';
+  const sqlUpdate = 'UPDATE `Users` SET `Major` = ?, `Name` = ?, `Picture` = ?, `YearEnrolled` = ? WHERE `UserId` = ?;';
 
   connection.query(
     sqlUpdate,
     [Major, Name, Picture, YearEnrolled, UserId],
-    (error, result) => {
+    (error) => {
       if (error) console.log(error);
       res.sendStatus(200);
-    }
+    },
   );
 });
 
 app.put('/updateUniversity', (req, res) => {
-  const UniCity = req.body.UniCity;
-  const PrimeColor = req.body.PrimeColor;
-  const SecondColor = req.body.SecondColor;
-  const EmailDomain = req.body.EmailDomain;
-  const UniversityID = req.body.UniversityID;
-  const UniName = req.body.UniName;
+  const { UniCity } = req.body;
+  const { PrimeColor } = req.body;
+  const { SecondColor } = req.body;
+  const { EmailDomain } = req.body;
+  const { UniversityID } = req.body;
+  const { UniName } = req.body;
 
-  console.log(UniCity);
-  console.log(PrimeColor);
-  console.log(SecondColor);
-  console.log(EmailDomain);
-  console.log(UniversityID);
-  console.log(UniName);
-
-  const sqlUpdate =
-    'UPDATE `University` SET `City` = ?,`PrimaryColor` = ?, `SecondaryColor` = ?, `UniversityName` = ?, `emailDomain` = ? WHERE `UniversityID` = ?;';
+  const sqlUpdate = 'UPDATE `University` SET `City` = ?,`PrimaryColor` = ?, `SecondaryColor` = ?, `UniversityName` = ?, `emailDomain` = ? WHERE `UniversityID` = ?;';
 
   connection.query(
     sqlUpdate,
     [UniCity, PrimeColor, SecondColor, UniName, EmailDomain, UniversityID],
-    (error, result) => {
+    (error) => {
       if (error) console.log(error);
       res.sendStatus(200);
-    }
+    },
   );
 });
 
 // route for updating entry in a user's wishlist
 app.post('/user/wishlist/update', authUser, (req, res) => {
   const sql = queries.wishlistUpdate;
-  const { userid, courseid, desc } = req.body;
+  const { courseid, desc } = req.body;
 
   connection.query(sql, [desc, courseid, req.user], (err, data) => {
     if (err) throw err;
@@ -223,9 +209,7 @@ app.post('/user/wishlist/update', authUser, (req, res) => {
 // route for deleting entry from a user's wishlist
 app.delete('/user/wishlist', authUser, (req, res) => {
   const sql = queries.wishlistDelete;
-  const { userid, courseid } = req.query;
-
-  console.log(req.user);
+  const { courseid } = req.query;
 
   connection.query(sql, [req.user, courseid], (err, data) => {
     if (err) throw err;
@@ -241,7 +225,6 @@ app.delete('/user/wishlist', authUser, (req, res) => {
 // route for querying all courses that a user has taken
 app.get('/user/coursesTaken', authUser, (req, res) => {
   const sql = queries.coursesTakenQuery;
-  const { userid } = req.query;
 
   connection.query(sql, [req.user], (err, data) => {
     if (err) throw err;
@@ -290,8 +273,7 @@ app.get('/user/coursedescription', (req, res) => {
 app.post('/user/coursesTaken', authUser, (req, res) => {
   const sql = queries.coursesTakenInsert;
   const { courseid } = req.body;
-  console.log(courseid);
-  // we probably need to validate the university ID here? for searching
+
   connection.query(sql, [req.user, courseid], (err, data) => {
     if (err) {
       res.json({
@@ -312,7 +294,7 @@ app.post('/user/coursesTaken', authUser, (req, res) => {
 // route for querying all courses that a user has taken
 app.get('/user/coursesPlanner', authUser, (req, res) => {
   const sql = queries.coursesPlannerQuery;
-  const { userid, semester } = req.query;
+  const { semester } = req.query;
 
   connection.query(sql, [req.user, semester], (err, data) => {
     if (err) throw err;
@@ -330,8 +312,6 @@ app.post('/user/coursesPlanner', authUser, (req, res) => {
   const sql = queries.coursesPlannerInsert;
   const { courseid, semester } = req.body;
 
-  console.log(courseid);
-  // we probably need to validate the university ID here? for searching
   connection.query(sql, [req.user, courseid, semester], (err, data) => {
     if (err) {
       res.json({
@@ -354,8 +334,6 @@ app.delete('/user/coursesPlanner', authUser, (req, res) => {
   const sql = queries.coursesPlannerDelete;
   const { courseid, semester } = req.query;
 
-  console.log(req.user);
-
   connection.query(sql, [req.user, courseid, semester], (err, data) => {
     if (err) throw err;
     res.json({
@@ -377,7 +355,7 @@ function dfsHelp(
   edges,
   seen,
   res = null,
-  last = true
+  last = true,
 ) {
   if (depth >= targetDepth) {
     if (last && res) res.json({ edges, seen });
@@ -389,17 +367,18 @@ function dfsHelp(
     (err, data) => {
       if (err) throw err;
       data.forEach(({ RelatedCourseID }, i) => {
+        // eslint-disable-next-line
         seen[relationship][RelatedCourseID] = true;
         edges.push(
           relationship
             ? {
-                from: RelatedCourseID,
-                to: courseId,
-              }
+              from: RelatedCourseID,
+              to: courseId,
+            }
             : {
-                from: courseId,
-                to: RelatedCourseID,
-              }
+              from: courseId,
+              to: RelatedCourseID,
+            },
         );
         dfsHelp(
           RelatedCourseID,
@@ -409,13 +388,13 @@ function dfsHelp(
           edges,
           seen,
           res,
-          last && i === data.length - 1
+          last && i === data.length - 1,
         );
       });
       if (last && data.length === 0 && res) {
         res.json({ edges, seen });
       }
-    }
+    },
   );
 }
 
