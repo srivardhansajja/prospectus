@@ -59,6 +59,7 @@ const wishlistQuery = `
   SELECT CourseID_wish, Description 
   FROM Prospectus.Wishlist 
   WHERE UserID_wish = ?  
+  AND Description LIKE CONCAT('%', ?, '%')
   ORDER BY CourseID_wish asc
 `;
 // AND Description LIKE CONCAT('%', ?, '%')
