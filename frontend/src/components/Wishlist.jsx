@@ -60,7 +60,7 @@ const Wishlist = (props) => {
   useEffect(() => {
     getWishlist();
     // eslint-disable-next-line
-  }, [props.refresh]);
+  }, [props.refresh[0]]);
 
   let styles = {
     padding: 0,
