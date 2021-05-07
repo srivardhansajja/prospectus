@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
 const client = new OAuth2Client(process.env.CLIENT_ID);
+const { assert } = require('console');
 const connection = require('./db');
 
 const queries = require('./queries');
@@ -47,9 +48,12 @@ app.post('/login', async (req, res) => {
   });
 
   const {
-    hd, email, name, picture, sub,
+    hd, email, name, picture, sub, aud,
   } = ticket.getPayload();
-
+  if (aud !== process.env.CLIENT_ID) {
+    res.sendStatus(400);
+  }
+  
   const query = 'INSERT IGNORE INTO Prospectus.Users SET UserId = ?, Name = ?, Email = ?, Picture = ?, UniversityID_u = IFNULL((SELECT UniversityID FROM Prospectus.University WHERE emailDomain = ?), 2)';
   connection.query(query, [sub, name, email, picture, hd], (err) => {
     if (err) res.sendStatus(500);
